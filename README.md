@@ -2,8 +2,7 @@
 
 ## What is it?
 
-A complete toolbag to get your idea live in minutes with a front to back architecture, infrastructure and pipeline. The aim 
-is to allow developers to focus immediately on their ideas vs integration, configuration and infrastructure. 
+A complete toolbag to get your idea live in minutes with a front to back architecture, infrastructure and pipeline.
 
 Getting a new project is time consuming: Setting up the **front end web stack**
 (which is a big enough problem in itself), building the **cloud infrastructure** (certificates, DNS, etc), **identity** integration, 
@@ -73,15 +72,15 @@ website_domain_name = "<Your Hosted Zone ID>"
 As outlined above - the major problem is the time and complexity to integrate and assemble a fully featured development
 and deployment architecture particularly when adding monitoring, logging, etc.
 
-### How many projects are the web application archetype?
+###  Serverless Archetype
 
-There are a ton of different architecture - obviously the web archetype is very common and the [serverless variant](https://aws.amazon.com/lambda/resources/refarch/refarch-webapp/) 
+The web archetype is very common and the [serverless variant](https://aws.amazon.com/lambda/resources/refarch/refarch-webapp/) 
 is growing in popularity. It is difficult to estimate the % of overall projects that use this but it is safe to assume it is 
 reasonably high and one of the most common architectures implemented.
 
 ![TUB Overview](documentation/RefArch_Serverless.png?raw=true "Serverless Reference Architecture")
 
-### Options to Build
+### Options
 
 There are a couple of different ways to build the serverless web application archetype
 
@@ -124,40 +123,54 @@ Put together it collapses what was previously distinct tools and lifecycles into
 ### Design Goals and Anti-Goals
 
 The design goals are
-1. To provide quick set up of the serverless web application archetype (front to back)
-2. Opinionated Jumping Off Point then Choose your own Adventure - The initial archetype will work for applications conforming to the archetype. However,
-developers will quickly find they need need to diverge/customize. The goal is to provide an opinionated starter kit then allow rapid divergence. 
-3. Supporting Features - A lambda serving from Redis is within the project but disabled by default. I am considering adding more sub-patterns with flags to enable/disable.
-This may be a trade-off between features for developers vs complexity/bloat to the overall project. Redis is disabled by default partly as it is one of the more expensive
-services in comparison to Lambda
-
-Note - Mini-PaaS - At one point I was toying with turning the project into a 'Native mini-PaaS' which would have included some form of Procfile ala Heroku. 
-However, that seemed overly complex. In reality, CDK closes the gap between full PaaS solutions and native. You can build a mini-PaaS yourself in CDK ....
-
-#### CDK Higher Level Constructs
-
-Basic CDK comes with basic constructs - bucket, gateway, ec2, etc. Building a basic pattern like redirect from naked to www requires a bucket, cloudfront, route53.
+1. Provide quick set up of 'everything' required to get the basic front to back archetype 
+2. Opinionated Jumping Off Point then Choose your own Adventure - Project provides a vanilla serverless archetype out the box. However,
+developers will quickly find they need need to diverge/customize. The goal is to provide an opinionated starter kit then allow rapid divergence.
+3. Feature Flag Patterns - The project currently has a feature flag to enable lambda serving from redis. It is disabled by default.
+I am considering adding more sub-patterns with flags to enable/disable. This may be a trade-off between features for developers vs complexity/bloat to the overall project. 
+4. Mini-PaaS - At one point I was toying with turning the project into a 'Native mini-PaaS' which would have included some form of Procfile ala Heroku. 
+However, it seemed unnecessary and complex to build a wrapper that would ultimately generate CDK code. In effect, CDK starts to make AWS feel like a powerful 'native mini-PaaS'
+5. CDK Patterns - Basic CDK comes with basic constructs - bucket, gateway, ec2, etc. Building a basic pattern like redirect from naked to www requires a bucket, cloudfront, route53.
 This can be achieved in basic CDK but is tedious. CDK has started work on higher level constructs which are a software engineering abstraction to assemble low level constructs
 into patterns. At the time of building not all the patterns were available. [HttpsRedirect](https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_route53_patterns/README.html)
 is used in the project. Over time it is anticipated that a lot of the code in the project could be compacted by using these pattern constructs.
 
+## Acknowledgements
+
+In many ways the novelty of the project is to assemble and integrate multiple components into a full architecture/toolkit.
+
+Acknowledgements
+1. [react-boilerplate](https://github.com/react-boilerplate/react-boilerplate)
+
+Other Reading
+1. I found this too late into building startup-toolbag [CDK Patterns](https://cdkpatterns.com/)
+2. Which is different from the official [AWS pattern library](https://github.com/aws-samples/aws-cdk-examples)
+
 ## Contributing
 
-All contributions greatly appreciated. Trying to follow the edict from Reid Hoffman
+All contributions greatly appreciated. Trying to follow the edict from Reid Hoffman.
 ```
 If you are not embarrassed by the first version of your product, you’ve launched too late
 ```
+The launch version of the project is 'good enough' and solves many hours
+of development time for people starting new project. 
 
-There are a number of features 
-
-
-
-## Authors
+There are many many features which could be added. Please submit a pull request.
+Also see the features page for open features/issues.
 
 ## License
 
-## Acknowledgements
+Copyright 2021 geod
 
-In many ways this project has no specific novelty. Instead, it assembles, integrates a bunch of patterns, technologies 
-and code into a working example.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
