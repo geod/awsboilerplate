@@ -28,7 +28,7 @@ This enables a single development experience where any element can be changed, c
 
 1. Existing AWS Account
 2. AWS CLI
-3. Python / Pip
+3. Python / Pip / Virtualenv
 
 ## Quick Start 
 
@@ -37,7 +37,7 @@ The below gets you running without registering a domain name
 2. Fork THEN clone this project (you have to fork vs clone as AWS will shortly attempt to pull and build it from github)
 3. Create a python venv
 ```
-python3 -m venv .venv
+virtualenv -p python3.8 .venv
 pip install -r requirements.txt
 ```
 4. Run `cdk bootstrap` (this command sets up cdk on your account)
