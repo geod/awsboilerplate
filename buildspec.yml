@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - cd www/react-boilerplate
+      - echo Running NPM Install
+      - pwd
+      - npm install
+  build:
+    commands:
+      - echo Running npm build
+      - pwd
+      - npm run build
+artifacts:
+  files:
+     - ./*
+  base-directory: www/react-boilerplate/build
