@@ -24,11 +24,10 @@ Using the latest features in CDK - any commit which makes changes to any of this
 This enables a single development experience where any element can be changed, committed and the pipeline will handle state changes.
 
 ### Architecture Overvieww
-
 ![TUB Overview](documentation/TUB.jpg?raw=true "The Startup Toolbag")
 
 ### CICD Pipeline Process
-![TUB CICD](documentation/TUB-CICD Pipeline.jpg?raw=true "The Startup Toolbag CICD")
+![TUB CICD](documentation/TUB-CICD%20Pipeline.jpg?raw=true "The Startup Toolbag CICD")
 
 ## Prerequisites
 
