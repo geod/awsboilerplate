@@ -27,7 +27,7 @@ This enables a single development experience where any element can be changed, c
 
 ![TUB Overview](documentation/TUB.jpg?raw=true "The Startup Toolbag")
 
-![TUB CICD](documentation/TUB-CICD\ Pipeline.jpg?raw=true "The Startup Toolbag CICD")
+![TUB CICD](documentation/TUB-CICD%20Pipeline.jpg?raw=true "The Startup Toolbag CICD")
 
 ## Prerequisites
 
