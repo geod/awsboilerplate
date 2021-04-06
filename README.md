@@ -2,7 +2,7 @@
 
 ## What is it?
 
-A complete toolbag to get your idea live in minutes with a front to back architecture, infrastructure and pipeline.
+A complete toolbag to get your idea live in minutes with a front to back architecture, infrastructure and CICD pipeline - all expressed in code.
 
 ## Motivation
 
@@ -12,16 +12,18 @@ some form of **CICD pipeline** and **monitoring**. Putting **everything** togeth
 and integration. This is particularly true to add more production ready features - logging, monitoring, dev/prod or blue/green, 
 robust and clean infrastructure.
  
-The startup toolbag aims to integrate a number of technologies into a single project which enables you to get running in minutes.
-It currently includes:
+The startup toolbag integrates a number of technologies to enable you to get running in minutes with a smooth development experience on a robust infrastructure. It currently includes:
 1. Front end web stack (leveraging the react boilerplate project)
-2. Serverless application architecture back end (defined in CDK)
-3. All infrastructure defined in code - certificates, route53, cloudfront, api-gateways (defined in CDK)
-4. CICD pipeline which self-mutates, creates the infrastructure and builds/deploys the code on each commit
+2. Serverless back end (leveraging AWS lambda)
+3. Infrastructure (certificates, route53, cloudfront, api-gateways)
+4. CICD pipeline (self mutates and deploys all infrastructure and application code)
 
-The novelty of the project is that all application, infrastructure, pipeline and monitoring are **fully* implemented in code in a single repo. 
-Using the latest features in CDK - any commit which makes changes to any of this list (including the logic of the pipeline itself) will mutate and deploy.
-This enables a single development experience where any element can be changed, committed and the pipeline will handle state changes.
+The novelty of the project is all application, infrastructure, pipeline and monitoring are **fully** implemented in code. 
+1. Application code => python
+2. Infrastructure => Defined in code (CDK)
+3. Monitoring => Defined in code (CDK)
+4. CICD Pipeline => Defined in code (CDK Pipeline, Code Pipeline and Codebuild)
+A commit which makes changes to **any of this list** will **be automatically deployed by the pipeline** (including the logic of the pipeline itself). 
 
 ### Architecture Overview
 ![TUB Overview](documentation/TUB.jpg?raw=true "The Startup Toolbag")
