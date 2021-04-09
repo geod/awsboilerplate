@@ -50,7 +50,7 @@ class CDKPipelineStack(core.Stack):
                                                                 oauth_token=core.SecretValue.secrets_manager(
                                                                     'startuptoolbag-github-oath-token'),
                                                                 output=self.source_output,
-                                                                branch='main')
+                                                                branch='master')
 
         # Note - this is an additional artifact per https://gist.github.com/JelsB/cff41685f12613d23a00951ce1531dbb
         application_code = code_pipeline.Artifact('application_code')
@@ -69,10 +69,11 @@ class CDKPipelineStack(core.Stack):
                                         synth_action=synth_action)
 
         # Can not be updated as it is in use by the sub stack
+        bucket_name = startuptoolbag_config.website_domain_name if startuptoolbag_config.website_domain_name != "" else None
         www_site_bucket = s3.Bucket(
             self,
             f'WWW2_Bucket_{startuptoolbag_config.website_domain_name}',
-            bucket_name=startuptoolbag_config.website_domain_name,
+            bucket_name=bucket_name,
             website_index_document='index.html',
             website_error_document='error.html',
             public_read_access=True,
