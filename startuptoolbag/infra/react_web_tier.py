@@ -9,7 +9,7 @@ def add_react_build(stack: core.Stack, code_pipeline, source_output, bucket_arn:
     # Could refactor the bucket to be part of the stage
 
     # https://github.com/aws-samples/aws-cdk-examples/blob/master/typescript/static-site/static-site.ts
-    # Need to move to a stack / into tub
+    # Need to move to a stack / into startuptoolbag
     # The codebuild project can be moved back out into the pipeline (bit awkward?)
 
     react_site_bucket = Bucket.from_bucket_arn(stack, id='SiteBucket', bucket_arn=bucket_arn)
