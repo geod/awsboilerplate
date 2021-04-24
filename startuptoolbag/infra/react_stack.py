@@ -30,7 +30,7 @@
 #         # Could refactor the bucket to be part of the stage
 #
 #         # https://github.com/aws-samples/aws-cdk-examples/blob/master/typescript/static-site/static-site.ts
-#         # Need to move to a stack / into tub
+#         # Need to move to a stack / into startuptoolbag
 #         # The codebuild project can be moved back out into the pipeline (bit awkward?)
 #
 #         self.react_site_bucket = s3.Bucket(self, 'ReactSiteBucket',

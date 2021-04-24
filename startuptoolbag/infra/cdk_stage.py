@@ -16,7 +16,7 @@ import startuptoolbag_config
 from .cloudfront_stack import CloudFrontStack, APIGatewayDeployStack, RawCloudFrontStack
 
 
-class UBStage(core.Stage):
+class CDKStage(core.Stage):
 
     def __init__(self, scope: core.Construct, id: str, **kwargs):
         super().__init__(scope, id, **kwargs)
@@ -65,7 +65,7 @@ class LambdaS3DataPipelineStack(core.Stack):
 
         # Simple 1 step data pipeline - raw_bucket => lambda_processor => processed_bucket
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(
-            directory=os.path.join(os.getcwd(), "tub/lambda-s3-processor"))
+            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda-s3-processor"))
         lambda_processor = aws_lambda.Function(self,
                                                id="lambdaS3DataProcessor",
                                                description="Processes Data Landed In S3",
@@ -88,7 +88,7 @@ class LambdaS3DataPipelineStack(core.Stack):
         # This is essentially an Object Lambda - https://aws.amazon.com/blogs/aws/introducing-amazon-s3-object-lambda-use-your-code-to-process-data-as-it-is-being-retrieved-from-s3/
         # TODO investigate when CDK support ObjectLambda or CDK Solutions Patterns
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(
-            directory=os.path.join(os.getcwd(), "tub/lambda-s3-server"))
+            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda-s3-server"))
         lambda_handler = aws_lambda.Function(self,
                                              id="lambdaS3Server",
                                              description="Handle API requests backed by S3",
@@ -131,7 +131,7 @@ class LambdaWebArchitectureStack(core.Stack):
                                                'service-role/AWSLambdaSQSQueueExecutionRole')])
 
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(
-            directory=os.path.join(os.getcwd(), "tub/lambda-sqs-handler"))
+            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda-sqs-handler"))
         lambda_handler_function = aws_lambda.Function(self,
                                                       id="lambdaSQSHandlerFunction",
                                                       description="Handles/Valdates background requests and puts on SQS",
@@ -149,7 +149,7 @@ class LambdaWebArchitectureStack(core.Stack):
 
         # Create the Background Worker
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(
-            directory=os.path.join(os.getcwd(), "tub/lambda-sqs-bworker"))
+            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda-sqs-bworker"))
         background_function = aws_lambda.Function(self,
                                                   id="lambdaSQSDrivenBackgroundWorker",
                                                   description="Pulls from SQS and is a background worker",
@@ -169,7 +169,7 @@ class LambdaWebArchitectureStack(core.Stack):
 
         # Create the Lambda Serving Requests
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(
-            directory=os.path.join(os.getcwd(), "tub/lambda-dynamodb-server"))
+            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda-dynamodb-server"))
         reader_function = aws_lambda.Function(self,
                                               id="lambdaDynamo Server",
                                               description="Handles API Requests backed by dynamo",
@@ -198,7 +198,7 @@ class LambdaRedisStack(core.Stack):
 
         self.redis = self.create_redis(vpc)
 
-        ecr_image = aws_lambda.EcrImageCode.from_asset_image(directory=os.path.join(os.getcwd(), "tub/lambda-redis"))
+        ecr_image = aws_lambda.EcrImageCode.from_asset_image(directory=os.path.join(os.getcwd(), "startuptoolbag/lambda-redis"))
 
         lambda_vpc_role = aws_iam.Role(self, id='lambda-vpc-role2',
                                        assumed_by=aws_iam.ServicePrincipal("lambda.amazonaws.com"),
@@ -253,7 +253,7 @@ class LambdaRedisStack(core.Stack):
             engine="redis",
             cache_node_type="cache.t2.micro",
             num_cache_nodes=1,
-            cluster_name="tub-redis",
+            cluster_name="startuptoolbag-redis",
             vpc_security_group_ids=[redis_security_group.security_group_id],
             cache_subnet_group_name=redis_subnet_group.cache_subnet_group_name,
             cache_parameter_group_name=redis_parameter_group.ref,

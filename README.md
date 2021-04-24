@@ -47,7 +47,7 @@ The below gets you running without registering a domain name
 virtualenv -p python3.8 .venv
 pip install -r requirements.txt
 ```
-4. Run `cdk bootstrap` (this command sets up cdk on your account)
+4. Run `cdk bootstrap --trust <AWS ACCOUNT ID> --cloudformation-execution-policies arn:aws:iam::aws:policy/AdministratorAccess` (this command sets up cdk on your account)
 5. Optionally run `cdk synth` to test the tools are installed correctly
 6. Log into github and create an access token to allow codepipeline to pull from the repository
 7. Add this access token to AWS secrets manager using the following command
@@ -56,7 +56,8 @@ aws secretsmanager create-secret --name startuptoolbag-github-oath-token \
     --description "Start Up Toolkbag Git Auth Token" \
     --secret-string <YOUR OATH TOKEN>
 ```
-8. Run `cdk deploy`. Note - setup is the *only* time you need to run cdk deploy
+8. Run `cdk deploy`. Note - setup is the *only* time you need to run cdk deploy to bootstrap the pipeline. 
+On any future commits the pipeline will run and update the pipeline and infrastructure.
 9. Log into codepipeline in your account and you will see a pipeline for the project. It should already be running
 and will be building and deploying the infrastructure and code
 10. Once the pipeline is complete you will be able to access the react front end

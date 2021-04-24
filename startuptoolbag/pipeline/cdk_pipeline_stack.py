@@ -1,7 +1,7 @@
 from aws_cdk import (core, aws_s3 as s3, aws_codebuild as codebuild, aws_codepipeline_actions as codepipeline_actions, aws_codepipeline as code_pipeline)
-from aws_cdk.pipelines import CdkPipeline, CdkStage
+from aws_cdk.pipelines import CdkPipeline
 from aws_cdk.pipelines import SimpleSynthAction
-from .cdk_stage import UBStage
+from startuptoolbag.infra.cdk_stage import CDKStage
 import startuptoolbag_config
 
 
@@ -63,7 +63,7 @@ class CDKPipelineStack(core.Stack):
             synth_command='cdk synth',
             additional_artifacts=[{'artifact': application_code, 'directory': './'}])
 
-        self.cdk_pipeline = CdkPipeline(self, "tub-pipeline-project",
+        self.cdk_pipeline = CdkPipeline(self, "startuptoolbag-pipeline-project",
                                         cloud_assembly_artifact=cloud_assembly_artifact,
                                         source_action=source_action,
                                         synth_action=synth_action)
@@ -81,7 +81,7 @@ class CDKPipelineStack(core.Stack):
         )
 
         # Creates infrastructure including cloudfront and the public facing bucket
-        ub_stage = UBStage(self, "cdk-stage")
+        ub_stage = CDKStage(self, "cdk-stage")
         cdk_stage = self.cdk_pipeline.add_application_stage(ub_stage)
 
         # Now need to build react and deploy
@@ -94,8 +94,8 @@ class CDKPipelineStack(core.Stack):
 
         build_output_artifact = code_pipeline.Artifact()
         codebuild_project = codebuild.PipelineProject(
-            self, "tub-CDKCodebuild",
-            project_name="tub-CodebuildProject",
+            self, "startuptoolbag-CDKCodebuild",
+            project_name="startuptoolbag-CodebuildProject",
             build_spec=codebuild.BuildSpec.from_source_filename(filename='buildspec.yml'),
             environment=codebuild.BuildEnvironment(privileged=True),
             description='React Build',
