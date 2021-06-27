@@ -95,7 +95,7 @@ class LambdaS3DataPipelineStack(core.Stack):
                                              code=ecr_image,
                                              handler=aws_lambda.Handler.FROM_IMAGE,
                                              runtime=aws_lambda.Runtime.FROM_IMAGE,
-                                             environment={'BUCKET': processed_bucket.bucket_name},
+                                             environment={'BUCKET_NAME': processed_bucket.bucket_name},
                                              memory_size=128,
                                              reserved_concurrent_executions=1,
                                              timeout=core.Duration.seconds(10))

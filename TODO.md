@@ -5,7 +5,7 @@ TODO
     3. Invoke lambda to invalidate - https://medium.com/taptuit/automated-build-deploy-with-aws-codepipeline-f0714d62f61c (or just plain blue-green)
     5. Authentication / Cognito
     6. Build Badges
-    7. Local development / SAM
+    7. Local development / SAM (problem because lambda is not generated)
     8. Bootstrap / Design
     9. Tests?
     10. Branch Deploys
@@ -23,3 +23,13 @@ DONE
     6. Lambda serve from S3
     5. Finish CDN & API.domain.com to API GW
     - Fix React servicing from bucket
+    
+    
+https://dev.to/davidepacilio/35-free-react-templates-and-themes-32ci
+https://demos.creative-tim.com/material-kit-react/#/
+https://designrevision.com/docs/shards-react/getting-started
+https://react-landing-page-template.herokuapp.com/#page-top
+https://blueprintjs.com/docs/
+https://react-bootstrap.github.io/getting-started/why-react-bootstrap/
+https://gatsby.ghost.org/
+https://demos.creative-tim.com/argon-design-system-react/#/

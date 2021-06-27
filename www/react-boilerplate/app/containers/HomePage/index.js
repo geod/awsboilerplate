@@ -63,7 +63,7 @@ export function HomePage({
         <title>Home Page</title>
         <meta
           name="description"
-          content="A React.js Boilerplate application homepage"
+          content="Startup Toolbag Demo Page"
         />
       </Helmet>
       <div>
@@ -80,19 +80,17 @@ export function HomePage({
             <FormattedMessage {...messages.trymeHeader} />
           </H2>
           <Form onSubmit={onSubmitForm}>
-            <label htmlFor="username">
               <FormattedMessage {...messages.trymeMessage} />
               <AtPrefix>
                 <FormattedMessage {...messages.trymeAtPrefix} />
               </AtPrefix>
               <Input
-                id="username"
+                id="foo"
                 type="text"
                 placeholder="mxstbr"
                 value={username}
                 onChange={onChangeUsername}
               />
-            </label>
           </Form>
           <ReposList {...reposListProps} />
         </Section>

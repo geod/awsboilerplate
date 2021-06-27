@@ -10,7 +10,7 @@ export const scope = 'boilerplate.containers.HomePage';
 export default defineMessages({
   startProjectHeader: {
     id: `${scope}.start_project.header`,
-    defaultMessage: 'Start your next react project in seconds',
+    defaultMessage: 'A complete toolkit to get you running in minutes',
   },
   startProjectMessage: {
     id: `${scope}.start_project.message`,
@@ -19,7 +19,7 @@ export default defineMessages({
   },
   trymeHeader: {
     id: `${scope}.tryme.header`,
-    defaultMessage: 'Try me!',
+    defaultMessage: 'Interact with Lambda',
   },
   trymeMessage: {
     id: `${scope}.tryme.message`,
