@@ -7,7 +7,8 @@ from aws_cdk import (
     core,
     aws_route53,
     aws_route53_patterns,
-    aws_route53_targets
+    aws_route53_targets,
+    aws_s3_deployment as s3deploy
 )
 import startuptoolbag_config
 
@@ -35,6 +36,12 @@ class RawCloudFrontStack(core.Stack):
             public_read_access=True,
             removal_policy=core.RemovalPolicy.DESTROY
         )
+
+        s3deploy.BucketDeployment(self, "DeployWebsite",
+                                  sources=[s3deploy.Source.asset("./www/react-boilerplate/build")],
+                                  destination_bucket=self.www_site_bucket,
+                                  destination_key_prefix="./"
+                                  )
 
         www_source_configuration = cloudfront.SourceConfiguration(
             s3_origin_source=cloudfront.S3OriginConfig(
@@ -95,6 +102,12 @@ class CloudFrontStack(core.Stack):
             public_read_access=True,
             removal_policy=core.RemovalPolicy.DESTROY
         )
+
+        s3deploy.BucketDeployment(self, "DeployWebsite",
+                                  sources=[s3deploy.Source.asset("./www/react-boilerplate/build")],
+                                  destination_bucket=self.www_site_bucket,
+                                  destination_key_prefix="./"
+                                  )
 
         # # Import the bucket that was created outside the stack
         # self.www_site_bucket = s3.Bucket.from_bucket_name(self, 'SiteBucket', core.Fn.import_value("WWWSITEBUCKETNAME"))
