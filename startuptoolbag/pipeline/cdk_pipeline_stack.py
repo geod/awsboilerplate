@@ -60,6 +60,7 @@ class CDKPipelineStack(core.Stack):
             source_artifact=self.source_output,
             cloud_assembly_artifact=cloud_assembly_artifact,
             install_command='npm install -g aws-cdk && pip install -r requirements.txt',
+            build_command='cd www/react-boilerplate; npm install; npm run build',
             synth_command='cdk synth',
             additional_artifacts=[{'artifact': application_code, 'directory': './'}])
 
@@ -68,56 +69,5 @@ class CDKPipelineStack(core.Stack):
                                         source_action=source_action,
                                         synth_action=synth_action)
 
-        # Can not be updated as it is in use by the sub stack
-        bucket_name = startuptoolbag_config.website_domain_name if startuptoolbag_config.website_domain_name != "" else None
-        www_site_bucket = s3.Bucket(
-            self,
-            f'WWW2_Bucket_{startuptoolbag_config.website_domain_name}',
-            bucket_name=bucket_name,
-            website_index_document='index.html',
-            website_error_document='error.html',
-            public_read_access=True,
-            removal_policy=core.RemovalPolicy.DESTROY
-        )
-
-        # Creates infrastructure including cloudfront and the public facing bucket
-        ub_stage = CDKStage(self, "cdk-stage")
-        cdk_stage = self.cdk_pipeline.add_application_stage(ub_stage)
-
-        # Now need to build react and deploy
-        # Challenges
-        # 1. Cant get the bucket out of the stage
-        # 2. Cant put the codebuild into the stage
-        # 3. Cant create react build as a separate stage
-        # 4. Cant export the bucket as a variable because the import attempts to run before the stage is synthesized
-
-
-        build_output_artifact = code_pipeline.Artifact()
-        codebuild_project = codebuild.PipelineProject(
-            self, "startuptoolbag-CDKCodebuild",
-            project_name="startuptoolbag-CodebuildProject",
-            build_spec=codebuild.BuildSpec.from_source_filename(filename='buildspec.yml'),
-            environment=codebuild.BuildEnvironment(privileged=True),
-            description='React Build',
-            timeout=core.Duration.minutes(60),
-        )
-
-        self.build_action = codepipeline_actions.CodeBuildAction(action_name="ReactBuild",
-                                                                 project=codebuild_project,
-                                                                 input=application_code,
-                                                                 outputs=[build_output_artifact])
-
-        self.s3_deploy = codepipeline_actions.S3DeployAction(action_name="ReactS3Push",
-                                                             input=build_output_artifact,
-                                                             bucket=www_site_bucket)
-
-        self.cdk_pipeline.code_pipeline.add_stage(stage_name="ReactBuild", actions=[self.build_action])
-        self.cdk_pipeline.code_pipeline.add_stage(stage_name="ReactDeploy", actions=[self.s3_deploy])
-
-        self.output = core.CfnOutput(
-            self, "WWWSITEBUCKETNAME", export_name="WWWSITEBUCKETNAME",
-            value=www_site_bucket.bucket_name
-        )
-        props = {'namespace': 'cdk-example-pipeline'}
-        self.output_props = props.copy()
-        self.output_props['WWWSITEBUCKETNAME'] = www_site_bucket
+        stk_stage = CDKStage(self, "cdk-stage")
+        cdk_stage = self.cdk_pipeline.add_application_stage(stk_stage)

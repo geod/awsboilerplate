@@ -25,7 +25,16 @@ class RawCloudFrontStack(core.Stack):
     def __init__(self, scope: core.Construct, id: str, **kwargs):
         super().__init__(scope, id, **kwargs)
 
-        self.www_site_bucket = s3.Bucket.from_bucket_name(self, 'SiteBucket', core.Fn.import_value("WWWSITEBUCKETNAME"))
+        bucket_name = startuptoolbag_config.website_domain_name if startuptoolbag_config.website_domain_name != "" else None
+        self.www_site_bucket = s3.Bucket(
+            self,
+            f'WWW2_Bucket_{startuptoolbag_config.website_domain_name}',
+            bucket_name=bucket_name,
+            website_index_document='index.html',
+            website_error_document='error.html',
+            public_read_access=True,
+            removal_policy=core.RemovalPolicy.DESTROY
+        )
 
         www_source_configuration = cloudfront.SourceConfiguration(
             s3_origin_source=cloudfront.S3OriginConfig(
@@ -76,8 +85,19 @@ class CloudFrontStack(core.Stack):
             region='us-east-1',
         )
 
-        # Import the bucket that was created outside the stack
-        self.www_site_bucket = s3.Bucket.from_bucket_name(self, 'SiteBucket', core.Fn.import_value("WWWSITEBUCKETNAME"))
+        bucket_name = startuptoolbag_config.website_domain_name if startuptoolbag_config.website_domain_name != "" else None
+        self.www_site_bucket = s3.Bucket(
+            self,
+            f'WWW2_Bucket_{startuptoolbag_config.website_domain_name}',
+            bucket_name=bucket_name,
+            website_index_document='index.html',
+            website_error_document='error.html',
+            public_read_access=True,
+            removal_policy=core.RemovalPolicy.DESTROY
+        )
+
+        # # Import the bucket that was created outside the stack
+        # self.www_site_bucket = s3.Bucket.from_bucket_name(self, 'SiteBucket', core.Fn.import_value("WWWSITEBUCKETNAME"))
 
         # CloudFront distribution that provides HTTPS - for www
         www_alias_configuration = cloudfront.AliasConfiguration(
