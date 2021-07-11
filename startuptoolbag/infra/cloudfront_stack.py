@@ -40,7 +40,7 @@ class RawCloudFrontStack(core.Stack):
         s3deploy.BucketDeployment(self, "DeployWebsite",
                                   sources=[s3deploy.Source.asset("./www/react-boilerplate/build")],
                                   destination_bucket=self.www_site_bucket,
-                                  destination_key_prefix="./"
+                                  #destination_key_prefix="./"
                                   )
 
         www_source_configuration = cloudfront.SourceConfiguration(
@@ -106,7 +106,7 @@ class CloudFrontStack(core.Stack):
         s3deploy.BucketDeployment(self, "DeployWebsite",
                                   sources=[s3deploy.Source.asset("./www/react-boilerplate/build")],
                                   destination_bucket=self.www_site_bucket,
-                                  destination_key_prefix="./"
+                                  #destination_key_prefix="./"
                                   )
 
         # # Import the bucket that was created outside the stack
