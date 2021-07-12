@@ -37,7 +37,7 @@ const myReducer = (state = initialState, action) =>
   });
 ```
 
-We use [`reselect`](./reselect.md) to efficiently cache our computed application
+We use [`reselect`](reselect.md) to efficiently cache our computed application
 state.
 
 ```JS

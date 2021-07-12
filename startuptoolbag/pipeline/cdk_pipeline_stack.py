@@ -2,7 +2,7 @@ from aws_cdk import (core, aws_s3 as s3, aws_codebuild as codebuild, aws_codepip
 from aws_cdk.pipelines import CdkPipeline
 from aws_cdk.pipelines import SimpleSynthAction
 from startuptoolbag.infra.cdk_stage import CDKStage
-import startuptoolbag_config
+import startuptoolbag_config as config
 
 
 # TODO / Manual Fiddles to IAM that I need to put in code
@@ -45,8 +45,8 @@ class CDKPipelineStack(core.Stack):
 
         self.source_output = code_pipeline.Artifact()
         source_action = codepipeline_actions.GitHubSourceAction(action_name="GitHub_Source",
-                                                                owner=startuptoolbag_config.github_user,
-                                                                repo=startuptoolbag_config.github_repo,
+                                                                owner=config.github_user,
+                                                                repo=config.github_repo,
                                                                 oauth_token=core.SecretValue.secrets_manager(
                                                                     'startuptoolbag-github-oath-token'),
                                                                 output=self.source_output,
@@ -60,7 +60,7 @@ class CDKPipelineStack(core.Stack):
             source_artifact=self.source_output,
             cloud_assembly_artifact=cloud_assembly_artifact,
             install_command='npm install -g aws-cdk && pip install -r requirements.txt',
-            build_command='echo SynthBuildStart && cd $CODEBUILD_SRC_DIR/www/react-boilerplate && npm install && npm run build && echo SynthBuildStart',
+            build_command='echo SynthBuildStart && cd $CODEBUILD_SRC_DIR/startuptoolbag/www/react-boilerplate && npm install && npm run build && echo SynthBuildStart',
             synth_command='cd $CODEBUILD_SRC_DIR && cdk synth',
             additional_artifacts=[{'artifact': application_code, 'directory': './'}])
 
@@ -70,5 +70,19 @@ class CDKPipelineStack(core.Stack):
                                         synth_action=synth_action,
                                         self_mutating=True)
 
-        stk_stage = CDKStage(self, "cdk-stage")
-        cdk_stage = self.cdk_pipeline.add_application_stage(stk_stage)
+        env = {
+            'account': config.account,
+            'region': config.region,
+        }
+
+        if config.beta_environment:
+            beta_app_stage = CDKStage(self, "cdk-stage", env=env,
+                                      domain_name=None,
+                                      hosted_zone_id=None)
+            beta_stage = self.cdk_pipeline.add_application_stage(beta_app_stage)
+            beta_stage.add_manual_approval_action(action_name="PromoteToProd")
+
+        prod_app_stage = CDKStage(self, "cdk-stage", env=env,
+                              domain_name=config.website_domain_name,
+                              hosted_zone_id=config.hosted_zone_id)
+        prod_stage = self.cdk_pipeline.add_application_stage(prod_app_stage)

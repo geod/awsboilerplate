@@ -13,41 +13,33 @@ from aws_cdk import (
 )
 import aws_cdk.aws_lambda_event_sources as eventsources
 import startuptoolbag_config
-from .cloudfront_stack import CloudFrontStack, APIGatewayDeployStack, RawCloudFrontStack
+from .cloudfront_stack import FlexibleCloudFrontStack, APIGatewayDeployStack
 
 
 class CDKStage(core.Stage):
 
-    def __init__(self, scope: core.Construct, id: str, **kwargs):
+    def __init__(self, scope: core.Construct, id: str, domain_name=None, hosted_zone_id=None, **kwargs):
         super().__init__(scope, id, **kwargs)
 
-        env = {
-            'account': startuptoolbag_config.account,
-            'region': startuptoolbag_config.region,
-        }
-
-        if startuptoolbag_config.hosted_zone_id != "":
-            self.cloud_front_stack = CloudFrontStack(self, 'CloudFrontStack', env=env, **kwargs)
-        else:
-            self.cloud_front_stack = RawCloudFrontStack(self, 'RawCloudFrontStack', env=env, **kwargs)
+        self.cloud_front_stack = FlexibleCloudFrontStack(self, 'CloudFrontStack', domain_name, hosted_zone_id, **kwargs)
 
         if startuptoolbag_config.stack_lambda_redis_enabled:
             self.lambda_redis_stack = LambdaRedisStack(self, 'LambdaRedisStack',
                                                        api_gateway=self.cloud_front_stack.rest_api,
-                                                       env=env, **kwargs)
+                                                    **kwargs)
 
         if startuptoolbag_config.stack_lambda_webarchitecture_enabled:
             self.lambda_sns_stack = LambdaWebArchitectureStack(self, 'LambdaWebArchitectureStack',
-                                                               api_gateway=self.cloud_front_stack.rest_api, env=env,
+                                                               api_gateway=self.cloud_front_stack.rest_api,
                                                                **kwargs)
 
         if startuptoolbag_config.stack_lambda_s3processor_enabled:
             self.lambda_data_stack = LambdaS3DataPipelineStack(self, 'LambdaS3DataPipelineStack',
                                                                api_gateway=self.cloud_front_stack.rest_api,
-                                                               env=env, **kwargs)
+                                                               **kwargs)
 
         self.deploy_stack = APIGatewayDeployStack(self, 'APIDeployStack',
-                                                  api_gateway=self.cloud_front_stack.rest_api, env=env)
+                                                  api_gateway=self.cloud_front_stack.rest_api)
 
 
 class LambdaS3DataPipelineStack(core.Stack):

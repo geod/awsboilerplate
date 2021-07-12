@@ -141,7 +141,7 @@ owners to license your work under the terms of the [MIT License](https://github.
 
 # Collaborating guidelines
 
-You can find the list of all contributors in [README.md](./README.md).
+You can find the list of all contributors in [README.md](README.md).
 
 There are few basic rules to ensure high quality of the boilerplate:
 

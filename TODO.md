@@ -1,6 +1,5 @@
 TODO
     1. Bitbucket source action
-    2. Live demo / domain name
     4. Beta / Prod
     3. Invoke lambda to invalidate - https://medium.com/taptuit/automated-build-deploy-with-aws-codepipeline-f0714d62f61c (or just plain blue-green)
     5. Authentication / Cognito
@@ -14,6 +13,7 @@ TODO
     13. Monitoring
     
 DONE
+    2. Live demo / domain name
     1. CDK bootstrap
     2. Pipeline (self mutating) - DONE
     1. Serve static site - DONE (this is actually a diff pattern)
