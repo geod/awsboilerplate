@@ -64,7 +64,7 @@ class CDKPipelineStack(core.Stack):
                           'cd $CODEBUILD_SRC_DIR/startuptoolbag/www/react-boilerplate && '
                           'npm install && npm run build && '
                           'echo SynthBuildEnd',
-            synth_command='cdk synth',
+            synth_command='cd $CODEBUILD_SRC_DIR && cdk synth',
             additional_artifacts=[{'artifact': application_code, 'directory': './'}])
 
         self.cdk_pipeline = CdkPipeline(self, "startuptoolbag-pipeline-project",
