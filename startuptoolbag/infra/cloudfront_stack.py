@@ -105,9 +105,7 @@ class CloudFrontStack(core.Stack):
 
         s3deploy.BucketDeployment(self, "DeployWebsite",
                                   sources=[s3deploy.Source.asset("./www/react-boilerplate/build")],
-                                  destination_bucket=self.www_site_bucket,
-                                  #destination_key_prefix="./"
-                                  )
+                                  destination_bucket=self.www_site_bucket)
 
         # # Import the bucket that was created outside the stack
         # self.www_site_bucket = s3.Bucket.from_bucket_name(self, 'SiteBucket', core.Fn.import_value("WWWSITEBUCKETNAME"))
