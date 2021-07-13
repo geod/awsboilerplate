@@ -56,6 +56,9 @@ class CDKPipelineStack(core.Stack):
         application_code = code_pipeline.Artifact('application_code')
         cloud_assembly_artifact = code_pipeline.Artifact('cloudformation_output')
 
+        self.code_pipeline = code_pipeline.Pipeline(self, "codepipeline-project", restart_execution_on_update=True,
+                                                    stages=[code_pipeline.StageProps(stage_name="Source",actions=[source_action])])
+
         synth_action = SimpleSynthAction(
             source_artifact=self.source_output,
             cloud_assembly_artifact=cloud_assembly_artifact,
@@ -63,16 +66,11 @@ class CDKPipelineStack(core.Stack):
             synth_command='cd $CODEBUILD_SRC_DIR && cdk synth',
             additional_artifacts=[{'artifact': application_code, 'directory': './'}])
 
-        self.cdk_pipeline = CdkPipeline(self, "startuptoolbag-pipeline-project",
+        self.cdk_pipeline = CdkPipeline(self, "startuptoolbag-cdk-pipeline-project",
                                         cloud_assembly_artifact=cloud_assembly_artifact,
-                                        source_action=source_action,
+                                        code_pipeline=self.code_pipeline,
                                         synth_action=synth_action,
                                         self_mutating=True)
-
-        env = {
-            'account': config.account,
-            'region': config.region,
-        }
 
         build_output_artifact = code_pipeline.Artifact()
         codebuild_project = codebuild.PipelineProject(
@@ -88,6 +86,13 @@ class CDKPipelineStack(core.Stack):
                                                                  input=application_code,
                                                                  outputs=[build_output_artifact])
         self.cdk_pipeline.code_pipeline.add_stage(stage_name="ReactBuild", actions=[self.build_action])
+
+        env = {
+            'account': config.account,
+            'region': config.region,
+        }
+
+
 
 
         if config.beta_environment:
