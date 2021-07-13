@@ -3,7 +3,7 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - cd www/react-boilerplate
+      - cd startuptoolbag/www/react-boilerplate
       - echo Running NPM Install
       - pwd
       - npm install
@@ -15,4 +15,4 @@ phases:
 artifacts:
   files:
      - ./*
-  base-directory: www/react-boilerplate/build
+  base-directory: startuptoolbag/www/react-boilerplate/build

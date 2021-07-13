@@ -74,6 +74,15 @@ class CDKPipelineStack(core.Stack):
             'region': config.region,
         }
 
+        codebuild_project = codebuild.PipelineProject(
+            self, "startuptoolbag-CDKCodebuild",
+            project_name="startuptoolbag-CodebuildProject",
+            build_spec=codebuild.BuildSpec.from_source_filename(filename='buildspec.yml'),
+            environment=codebuild.BuildEnvironment(privileged=True),
+            description='React Build',
+            timeout=core.Duration.minutes(60),
+        )
+
         if config.beta_environment:
             beta_app_stage = CDKStage(self, "cdk-stage", env=env,
                                       domain_name=None,
