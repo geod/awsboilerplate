@@ -63,7 +63,7 @@ class CDKPipelineStack(core.Stack):
             source_artifact=self.source_output,
             cloud_assembly_artifact=cloud_assembly_artifact,
             install_command='npm install -g aws-cdk && pip install -r requirements.txt',
-            synth_command='cd $CODEBUILD_SRC_DIR && cdk synth',
+            synth_command='cd $CODEBUILD_SRC_DIR && mkir startup-toolbag/www/react-boilerplate/build && cdk synth',
             additional_artifacts=[{'artifact': application_code, 'directory': './'}])
 
         self.cdk_pipeline = CdkPipeline(self, "startuptoolbag-cdk-pipeline-project",
