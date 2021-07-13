@@ -96,13 +96,13 @@ class CDKPipelineStack(core.Stack):
 
 
         if config.beta_environment:
-            beta_app_stage = CDKStage(self, "cdk-stage", env=env,
+            beta_app_stage = CDKStage(self, "startuptoolbag-beta", env=env,
                                       domain_name=None,
                                       hosted_zone_id=None)
             beta_stage = self.cdk_pipeline.add_application_stage(beta_app_stage)
             beta_stage.add_manual_approval_action(action_name="PromoteToProd")
 
-        prod_app_stage = CDKStage(self, "cdk-stage", env=env,
+        prod_app_stage = CDKStage(self, "startuptoolbag-prod", env=env,
                               domain_name=config.website_domain_name,
                               hosted_zone_id=config.hosted_zone_id)
         prod_stage = self.cdk_pipeline.add_application_stage(prod_app_stage)
