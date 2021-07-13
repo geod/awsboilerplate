@@ -74,6 +74,7 @@ class CDKPipelineStack(core.Stack):
             'region': config.region,
         }
 
+        build_output_artifact = code_pipeline.Artifact()
         codebuild_project = codebuild.PipelineProject(
             self, "startuptoolbag-CDKCodebuild",
             project_name="startuptoolbag-CodebuildProject",
@@ -82,6 +83,12 @@ class CDKPipelineStack(core.Stack):
             description='React Build',
             timeout=core.Duration.minutes(60),
         )
+        self.build_action = codepipeline_actions.CodeBuildAction(action_name="ReactBuild",
+                                                                 project=codebuild_project,
+                                                                 input=application_code,
+                                                                 outputs=[build_output_artifact])
+        self.cdk_pipeline.code_pipeline.add_stage(stage_name="ReactBuild", actions=[self.build_action])
+
 
         if config.beta_environment:
             beta_app_stage = CDKStage(self, "cdk-stage", env=env,
