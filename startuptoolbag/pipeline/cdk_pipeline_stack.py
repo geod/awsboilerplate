@@ -52,18 +52,18 @@ class CDKPipelineStack(core.Stack):
                                                                 output=self.source_output,
                                                                 branch='master')
 
-        # Note - this is an additional artifact per https://gist.github.com/JelsB/cff41685f12613d23a00951ce1531dbb
-        application_code = code_pipeline.Artifact('application_code')
-        cloud_assembly_artifact = code_pipeline.Artifact('cloudformation_output')
-
+        # Create a
         self.code_pipeline = code_pipeline.Pipeline(self, "codepipeline-project", restart_execution_on_update=True,
                                                     stages=[code_pipeline.StageProps(stage_name="Source",actions=[source_action])])
 
+        # Note - this is an additional artifact per https://gist.github.com/JelsB/cff41685f12613d23a00951ce1531dbb
+        application_code = code_pipeline.Artifact('application_code')
+        cloud_assembly_artifact = code_pipeline.Artifact('cloudformation_output')
         synth_action = SimpleSynthAction(
             source_artifact=self.source_output,
             cloud_assembly_artifact=cloud_assembly_artifact,
             install_command='npm install -g aws-cdk && pip install -r requirements.txt',
-            synth_command='cd $CODEBUILD_SRC_DIR && mkdir startup-toolbag/www/react-boilerplate/build && cdk synth',
+            synth_command='cd $CODEBUILD_SRC_DIR && mkdir startuptoolbag/www/react-boilerplate/build && cdk synth',
             additional_artifacts=[{'artifact': application_code, 'directory': './'}])
 
         self.cdk_pipeline = CdkPipeline(self, "startuptoolbag-cdk-pipeline-project",
