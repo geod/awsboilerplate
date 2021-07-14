@@ -41,8 +41,8 @@ The pipeline allows the following workflows. Commiting changes to
 
 ### Everything Is Code
 
-The startup boilerplate is a natural continuation of the direction of travel the last few years. Over the last 
-few years infrastructure was moved into code. However, from a developer perspective it is still partial.
+Over the last decade infrastructure was moved into code. However, it is still partial in terms of covering all elements 
+of the environment, change management and developer independence.
 
 |**Infrastructure as Code** | 
 |---|
@@ -53,7 +53,8 @@ few years infrastructure was moved into code. However, from a developer perspect
 |Infrastructure deployed via CICD pipeline. Need for coordination with the application team|
 |Infrastructure and Application skillset split across two teams |
 
-The term we are coining for the end state 
+The end state of this direction of travel is **everything is code**: all the elements get moved into code 
+(application, infrastructure, monitoring, pipeline), change is consolidated and developers have more control.
 
 |**Infrastructure as Code** | **Everything is Code**|
 |---|---|
