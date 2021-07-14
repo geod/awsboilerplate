@@ -2,34 +2,67 @@
 
 ## What is it?
 
-A complete toolbag to get your idea live in minutes with a front to back architecture, infrastructure and CICD pipeline - all expressed in code.
+A complete boilerplate to get your idea live in minutes with a web front end, back end services, infrastructure, monitoring and CICD pipeline.
 
 ## Motivation
 
-Getting a new project is time consuming: Setting up the **front end web stack**
-(which is a big enough problem in itself), building the **cloud infrastructure** (certificates, DNS, etc), **identity** integration, 
-some form of **CICD pipeline** and **monitoring**. Putting **everything** together can be hours or days of configuration 
-and integration. This is particularly true to add more production ready features - logging, monitoring, dev/prod or blue/green, 
-robust and clean infrastructure.
+Getting a new project is time consuming: Setting up the front end web stack, back end services, 
+cloud infrastructure (Certificates, DNS, API Gateways, etc), CICD pipeline (beta, prod or blue/green) and monitoring. 
+Putting **everything** together can be hours or days of configuration and integration. Terraform is unsatisfying for most
+developers and the console is not integrated into the development lifecycle.
  
-The startup toolbag integrates a number of technologies to enable you to get running in minutes with a smooth development experience on a robust infrastructure. It currently includes:
+The startup boilerplate aims to provide a full lambda web architecture and development experience to get you running in minutes. 
+It currently includes:
 1. Front end web stack (leveraging the react boilerplate project)
-2. Serverless back end (leveraging AWS lambda)
-3. Infrastructure (certificates, route53, cloudfront, api-gateways)
-4. CICD pipeline (self mutates and deploys all infrastructure and application code)
+2. Serverless back end (request handling lambdas, background workers)
+3. Infrastructure (certificates, route53, cloudfront, API Gateways
+4. Monitoring (via cloudwatch)
+5. CICD pipeline (deployment pipeline including beta, prod and self-mutation detailed below)
 
-The novelty of the project is all application, infrastructure, pipeline and monitoring are **fully** implemented in code. 
-1. Application code => python
-2. Infrastructure => Defined in code (CDK)
-3. Monitoring => Defined in code (CDK)
-4. CICD Pipeline => Defined in code (CDK Pipeline, Code Pipeline and Codebuild)
-A commit which makes changes to **any of this list** will **be automatically deployed by the pipeline** (including the logic of the pipeline itself). 
+The novelty of the project is **all of the above elements** are implemented **in code**, in a **single mono repository**.
+The project leverages CDK and some experimental features of CDK (CDKPipelines). Committing code changes to any element 
+triggers the CICD pipeline which mutates the environment. 
+We are calling this pattern 'Everything is Code' which is described in more detail below.
 
 ### Architecture Overview
+The project implements a lambda reference architecture for web applications with CICD pipeline, building react front 
+end for distribution via CloudFront over S3. An API Gateway fronts lambdas serving from S3 and a background worker.
+
 ![TUB Overview](documentation/TUB.jpg?raw=true "The Startup Toolbag")
 
 ### CICD Pipeline Process
+A custom CICD pipeline leverages foundational features provided by [CDK Pipelines](https://aws.amazon.com/blogs/developer/cdk-pipelines-continuous-delivery-for-aws-cdk-applications/).
 ![TUB CICD](documentation/TUB-CICD%20Pipeline.jpg?raw=true "The Startup Toolbag CICD")
+
+The pipeline allows the following workflows. Commiting changes to 
+* application code (changing a lambda implementation) => pipeline will build and redeploy
+* infrastructure (adding a lambda, adding an API gateway route) => pipeline will synthesize the cloudformation, compare to the current infrastructure and execute changes (add, modify, delete) to bring in line with the desired state
+* pipeline definition (adding/deleting new stages to the pipeline logic) => one of the **first stages** of the pipeine is it will self-mutate to the new pipeline definition before running the rest of the pipeline
+
+### Everything Is Code
+
+The startup boilerplate is a natural continuation of the direction of travel the last few years. Over the last 
+few years infrastructure was moved into code. However, from a developer perspective it is still partial.
+
+|**Infrastructure as Code** | 
+|---|
+|Scope is typically compute and networking|
+|Tools targeted at the cloud or infrastructure team (Terraform). Steep learning curve or not accessible to developers |
+|Infrastructure as code held in distinct repo from application code|
+|Infrastructure changes made by the cloud/infrastructure team |
+|Infrastructure deployed via CICD pipeline. Need for coordination with the application team|
+|Infrastructure and Application skillset split across two teams |
+
+The term we are coining for the end state 
+
+|**Infrastructure as Code** | **Everything is Code**|
+|---|---|
+|Scope is typically compute and networking|Everything: Application Code, Infrastructure, Pipeline, Monitoring|
+|Tools targeted at the cloud or infrastructure team (Terraform). Steep learning curve or not accessible to developers |Tools targeted at developers (CDK)|
+|Infrastructure as code held in distinct repo from application code|Definitions for everything held in single mono-repo|
+|Infrastructure changes made by the cloud/infrastructure team | Definitions changed by developers |
+|Infrastructure deployed via CICD pipeline. Need for coordination with the application team| Singular pipeline handles all changes| 
+|Infrastructure and Application skillset split across two teams | Developers more empowered likely with support from central cloud team|
 
 ## Prerequisites
 
