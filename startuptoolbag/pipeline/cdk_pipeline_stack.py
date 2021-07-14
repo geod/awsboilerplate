@@ -1,47 +1,14 @@
-from aws_cdk import (core, aws_s3 as s3, aws_codebuild as codebuild, aws_codepipeline_actions as codepipeline_actions, aws_codepipeline as code_pipeline)
-from aws_cdk.pipelines import CdkPipeline
-from aws_cdk.pipelines import SimpleSynthAction
-from startuptoolbag.infra.cdk_stage import CDKStage
+from aws_cdk import (core, aws_codebuild as codebuild, aws_codepipeline_actions as codepipeline_actions,
+                     aws_codepipeline as code_pipeline)
+from aws_cdk.pipelines import CdkPipeline, SimpleSynthAction
+from startuptoolbag.infra.lambda_webapp_cdk_stage import LambdaWebArchitectureCDKStage
 import startuptoolbag_config as config
-
-
-# TODO / Manual Fiddles to IAM that I need to put in code
-# - Had to give codebuild both cloudformation & staging bucket access
-# https://stackoverflow.com/questions/57118082/what-iam-permissions-are-needed-to-use-cdk-deploy
-# https://github.com/aws/aws-cdk/issues/6808
-# bucket.grant_read_write(pipeline.role)
-# Had to grant codebuild ability to search for VPCs/List when I started to add elasticache and vpc
-# https://github.com/aws/aws-cdk/issues/1898
-
-################################################################################
-# Create the CDK pipeline.
-# Its kind of a bad API - you have to create a 'special/explicit/CDK' type of pipeline rather than an arbitrary pipeline that has a synth stage
-#
-# However, by using this special CDKPipeline codepipeline will create mutate stages and additional behavior (dynamically mutate it)
-# https://aws.amazon.com/blogs/developer/cdk-pipelines-continuous-delivery-for-aws-cdk-applications/
-# https://github.com/aws/aws-cdk
-
-# Real world tips and tricks: https://medium.com/swlh/aws-cdk-pipelines-real-world-tips-and-tricks-part-1-544601c3e90b
-################################################################################
-
-################################################################################
-# The above handles the 'bootstrap' of the pipeline. It only mutates the pipeline.
-# It does not create or execute entirety of CDK
-# You can now add more STAGES which in turn can define STACKS / Actions
-################################################################################
-
-# Note Stage is set of stacks (variables can not cross stages. This is different than stacks)
-# OMG - this is nasty - https://medium.com/swlh/aws-cdk-pipelines-real-world-tips-and-tricks-part-1-544601c3e90b
-
-# TODO - v2 seems to be BitBucketSourceAction - https://github.com/aws/aws-cdk/issues/11582
-# Makes a mutuable pipeline (updates itself) https://www.youtube.com/watch?v=1ps0Wh19MHQ
 
 
 class CDKPipelineStack(core.Stack):
 
     def __init__(self, scope: core.Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
-
 
         self.source_output = code_pipeline.Artifact()
         source_action = codepipeline_actions.GitHubSourceAction(action_name="GitHub_Source",
@@ -52,11 +19,25 @@ class CDKPipelineStack(core.Stack):
                                                                 output=self.source_output,
                                                                 branch='master')
 
-        # Create a
+        """
+        The pipeline we want to create handles all of application, infrastructure, monitoring and pipeline
+        Source -> Synth -> Self Mutate Pipeline -> Build Application Artifacts -> CDK Assets -> CDK Deploy
+        
+        CDK does not currently natively support mixing application and infrastructure builds in a single pipeline.
+        To achieve a single combined pipeline we have to wire this together in a non-standard way and jump through a few hoops.
+        
+        Constraints that need to be followed:
+        - All application build artifacts must be created after the pipeline mutates and before CDK constructs
+        - We are not allowed to pass constructs from outside CDK stages into CDK stages.
+        - We can 'sneak' build artifacts from the local filesystem into the CDK Stage
+        
+        Rather than following the standard examples and creating a CDK Pipeline from the outset we need to create a standard
+        code pipeline and add the CDK features onto that pipeline
+        """
         self.code_pipeline = code_pipeline.Pipeline(self, "codepipeline-project", restart_execution_on_update=True,
-                                                    stages=[code_pipeline.StageProps(stage_name="Source",actions=[source_action])])
+                                                    stages=[code_pipeline.StageProps(stage_name="Source",
+                                                                                     actions=[source_action])])
 
-        # Note - this is an additional artifact per https://gist.github.com/JelsB/cff41685f12613d23a00951ce1531dbb
         application_code = code_pipeline.Artifact('application_code')
         cloud_assembly_artifact = code_pipeline.Artifact('cloudformation_output')
         synth_action = SimpleSynthAction(
@@ -66,12 +47,23 @@ class CDKPipelineStack(core.Stack):
             synth_command='cd $CODEBUILD_SRC_DIR && mkdir startuptoolbag/www/react-boilerplate/build && cdk synth',
             additional_artifacts=[{'artifact': application_code, 'directory': './'}])
 
+        """
+        Adds CDK stages to the existing pipeline
+        CDK pipelines stages added include 1) self-mutate on changes to this file 2) allows deployment of CDK constructs
+        """
         self.cdk_pipeline = CdkPipeline(self, "startuptoolbag-cdk-pipeline-project",
                                         cloud_assembly_artifact=cloud_assembly_artifact,
                                         code_pipeline=self.code_pipeline,
                                         synth_action=synth_action,
                                         self_mutating=True)
 
+        """
+        To add application builds we add a codebuild project to the pipeline. The one twist is that the project
+        leaves build artifacts on the local filesystem of codepipeline. 
+        
+        We are going to pull these artifacts from this path and deploy to S3 within the CDK stage later in the pipeline
+        (this is why the application artifact builds need to run before the CDK stages)
+        """
         build_output_artifact = code_pipeline.Artifact()
         codebuild_project = codebuild.PipelineProject(
             self, "startuptoolbag-CDKCodebuild",
@@ -92,17 +84,18 @@ class CDKPipelineStack(core.Stack):
             'region': config.region,
         }
 
-
-
-
+        """
+        Application stages in CDK are misleadingly named. They are meant to be self-contained environments (beta, prod)
+        The stage deploys the full set of constructs (API GW, CloudFront, Lambdas, Dynamo, etc)
+        """
         if config.beta_environment:
-            beta_app_stage = CDKStage(self, "startuptoolbag-beta", env=env,
-                                      domain_name=None,
-                                      hosted_zone_id=None)
+            beta_app_stage = LambdaWebArchitectureCDKStage(self, "startuptoolbag-beta", env=env,
+                                                           domain_name=None,
+                                                           hosted_zone_id=None)
             beta_stage = self.cdk_pipeline.add_application_stage(beta_app_stage)
             beta_stage.add_manual_approval_action(action_name="PromoteToProd")
 
-        prod_app_stage = CDKStage(self, "startuptoolbag-prod", env=env,
-                              domain_name=config.website_domain_name,
-                              hosted_zone_id=config.hosted_zone_id)
+        prod_app_stage = LambdaWebArchitectureCDKStage(self, "startuptoolbag-prod", env=env,
+                                                       domain_name=config.website_domain_name,
+                                                       hosted_zone_id=config.hosted_zone_id)
         prod_stage = self.cdk_pipeline.add_application_stage(prod_app_stage)

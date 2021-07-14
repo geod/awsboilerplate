@@ -16,7 +16,7 @@ import startuptoolbag_config
 from .cloudfront_stack import FlexibleCloudFrontStack, APIGatewayDeployStack
 
 
-class CDKStage(core.Stage):
+class LambdaWebArchitectureCDKStage(core.Stage):
 
     def __init__(self, scope: core.Construct, id: str, domain_name=None, hosted_zone_id=None, **kwargs):
         super().__init__(scope, id, **kwargs)
