@@ -46,8 +46,8 @@ of the environment, change management and developer independence.
 
 |**Infrastructure as Code** | 
 |---|
-|Scope is typically compute and networking|
-|Tools targeted at the cloud or infrastructure team (Terraform). Steep learning curve or not accessible to developers |
+|Scope limited to compute and networking resources|
+|Tools target the cloud/infrastructure team (Terraform). Steep learning curve or not accessible to developers |
 |Infrastructure definitions held in distinct repo from application code|
 |Infrastructure changes made by the cloud/infrastructure team |
 |Infrastructure deployed via CICD pipeline. Need for coordination with the application team|
