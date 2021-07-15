@@ -48,7 +48,7 @@ of the environment, change management and developer independence.
 |---|
 |Scope is typically compute and networking|
 |Tools targeted at the cloud or infrastructure team (Terraform). Steep learning curve or not accessible to developers |
-|Infrastructure as code held in distinct repo from application code|
+|Infrastructure definitions held in distinct repo from application code|
 |Infrastructure changes made by the cloud/infrastructure team |
 |Infrastructure deployed via CICD pipeline. Need for coordination with the application team|
 |Infrastructure and Application skillset split across two teams |
@@ -58,12 +58,12 @@ The end state of this direction of travel is **everything is code**: all the ele
 
 |**Infrastructure as Code** | **Everything is Code**|
 |---|---|
-|Scope is typically compute and networking|Everything: Application Code, Infrastructure, Pipeline, Monitoring|
-|Tools targeted at the cloud or infrastructure team (Terraform). Steep learning curve or not accessible to developers |Tools targeted at developers (CDK)|
-|Infrastructure as code held in distinct repo from application code|Definitions for everything held in single mono-repo|
-|Infrastructure changes made by the cloud/infrastructure team | Definitions changed by developers |
-|Infrastructure deployed via CICD pipeline. Need for coordination with the application team| Singular pipeline handles all changes| 
-|Infrastructure and Application skillset split across two teams | Developers more empowered likely with support from central cloud team|
+|Scope is typically compute and networking|Everything is defined in code (Application Code, Infrastructure, Pipeline, Monitoring) |
+|Tools targeted at the cloud or infrastructure team (Terraform). Steep learning curve or not accessible to developers | Tools targeted at developers (CDK)|
+|Infrastructure definitions held in distinct repo from application code| Definitions for everything held in single mono-repo|
+|Infrastructure changes made by the cloud/infrastructure team | Everything accessible to developers |
+|Infrastructure deployed by a distinct CICD pipeline. Application changes deployed by a different pipeline and coordination required | Singular pipeline handles all changes| 
+|Infrastructure and Application skillset split across two teams | Developers more empowered with support from central cloud team |
 
 ## Prerequisites
 
