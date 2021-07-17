@@ -28,16 +28,20 @@ We are calling this pattern 'Everything is Code' which is described in more deta
 The project implements a lambda reference architecture for web applications with CICD pipeline, building react front 
 end for distribution via CloudFront over S3. An API Gateway fronts lambdas serving from S3 and a background worker.
 
-![TUB Overview](documentation/TUB.jpg?raw=true "The Startup Toolbag")
+![Overview](documentation/AWS Boilerplate-Architecture.jpg?raw=true "The Startup Toolbag")
 
 ### CICD Pipeline Process
 A custom CICD pipeline leverages foundational features provided by [CDK Pipelines](https://aws.amazon.com/blogs/developer/cdk-pipelines-continuous-delivery-for-aws-cdk-applications/).
-![TUB CICD](documentation/TUB-CICD%20Pipeline.jpg?raw=true "The Startup Toolbag CICD")
+![TUB CICD](documentation/AWS Boilerplate-Pipeline.jpg?raw=true "The Startup Toolbag CICD")
 
-The pipeline allows the following workflows. Commiting changes to 
+The pipeline supports changing
 * application code (changing a lambda implementation) => pipeline will build and redeploy
 * infrastructure (adding a lambda, adding an API gateway route) => pipeline will synthesize the cloudformation, compare to the current infrastructure and execute changes (add, modify, delete) to bring in line with the desired state
 * pipeline definition (adding/deleting new stages to the pipeline logic) => one of the **first stages** of the pipeine is it will self-mutate to the new pipeline definition before running the rest of the pipeline
+
+![TUB CICD](documentation/AWS Boilerplate-Infrastructure Mutate.jpg?raw=true "Infrastructure Mutate")
+
+![TUB CICD](documentation/AWS Boilerplate-Pipeline Mutate.jpg?raw=true "Pipeline Mutate")
 
 ### Everything Is Code
 
