@@ -39,8 +39,11 @@ The pipeline supports changing
 * infrastructure (adding a lambda, adding an API gateway route) => pipeline will synthesize the cloudformation, compare to the current infrastructure and execute changes (add, modify, delete) to bring in line with the desired state
 * pipeline definition (adding/deleting new stages to the pipeline logic) => one of the **first stages** of the pipeine is it will self-mutate to the new pipeline definition before running the rest of the pipeline
 
+#### Committing an Infrastructure Change
+
 ![TUB CICD](documentation/AWS-Boilerplate-Infrastructure-Mutate.jpg?raw=true "Infrastructure Mutate")
 
+#### Committing an Pipeline Change
 ![TUB CICD](documentation/AWS-Boilerplate-Pipeline-Mutate.jpg?raw=true "Pipeline Mutate")
 
 ### Everything Is Code
