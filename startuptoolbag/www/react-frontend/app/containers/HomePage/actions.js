@@ -15,7 +15,12 @@
  *    }
  */
 
-import { SUBMIT_BACKGROUND_JOB, BACKGROUND_JOB_ACCEPTED, BACKGROUND_JOB_LAUNCH_FAIL } from './constants';
+import {
+  SUBMIT_BACKGROUND_JOB,
+  BACKGROUND_JOB_ACCEPTED,
+  BACKGROUND_JOB_LAUNCH_FAIL,
+  BACKGROUND_JOB_STATUS_POLL, BACKGROUND_JOB_RESULT
+} from './constants';
 
 /**
  * Changes the input field of the form
@@ -44,3 +49,19 @@ export function backgroundJobRejected(status) {
     type: BACKGROUND_JOB_LAUNCH_FAIL,
   };
 }
+
+
+export function pollCompletedJobs(status) {
+  return {
+    type: BACKGROUND_JOB_STATUS_POLL
+  };
+}
+
+export function backgroundJobStatusResult(jobs_result) {
+  return {
+    type: BACKGROUND_JOB_RESULT,
+    jobs_result: jobs_result
+  };
+}
+
+

@@ -18,8 +18,9 @@ import Form from './Form';
 import Section from './Section';
 import messages from './messages';
 
-import {makeSelectJobs} from './selectors'
+import {makeSelectJobs, makeSelectJobResults} from './selectors'
 import {submitBackgroundJob} from "./actions";
+import {pollCompletedJobs} from "./actions";
 import { useInjectReducer } from 'utils/injectReducer';
 import { useInjectSaga } from 'utils/injectSaga';
 import H2 from 'components/H2';
@@ -29,16 +30,13 @@ import saga from './saga';
 const key = 'home';
 
 export function HomePage({
-  onSubmitBackgroundTask,
+  onSubmitBackgroundJob,
+  onPollCompletedJobs,
   jobs,
+  job_results
 }) {
   useInjectReducer({ key, reducer });
   useInjectSaga({ key, saga });
-
-//  useEffect(() => {
-//    // When initial state username is not null, submit the form to load repos
-//    if (username && username.trim().length > 0) onSubmitForm();
-//  }, []);
 
   return (
     <article>
@@ -59,16 +57,22 @@ export function HomePage({
           </p>
         </CenteredSection>
         <Section>
-          <Form onSubmit={onSubmitBackgroundTask}>
+          <Form onSubmit={onSubmitBackgroundJob}>
           Launch a background task (check if number is prime):
             <Input
-                id="username"
+                id="numberprime"
                 type="number"
               />
           </Form>
         </Section>
         <Section>
-          {jobs.length}
+          Accepted Jobs
+          {jobs.map(job => { return (<div key={job.id}>{job.href}</div>)})}
+        </Section>
+        <Section>
+          Last 10 Jobs (Global)
+          <button onClick={onPollCompletedJobs}>Refresh</button>
+          {job_results.map(job_result => { return (<div key={job_result.id}>{JSON.stringify(job_result.id) }</div>)})}
         </Section>
       </div>
     </article>
@@ -76,22 +80,26 @@ export function HomePage({
 }
 
 HomePage.propTypes = {
-  onSubmitBackgroundTask: PropTypes.func,
+  onSubmitBackgroundJob: PropTypes.func,
+  onPollCompletedJobs: PropTypes.func,
   jobs: PropTypes.array,
+  job_results: PropTypes.array
 };
 
 // Maps the redux store state to component properties
 const mapStateToProps = createStructuredSelector({
   jobs: makeSelectJobs(),
+  job_results: makeSelectJobResults()
 });
 
 // Maps dispatch actions onto the properties of the component. Return values are callable functions in the component
 export function mapDispatchToProps(dispatch) {
   return {
-    onSubmitBackgroundTask: evt => {
+    onSubmitBackgroundJob: evt => {
       if (evt !== undefined && evt.preventDefault) evt.preventDefault();
       dispatch(submitBackgroundJob(evt.target.value))
-    }
+    },
+    onPollCompletedJobs: evt => dispatch(pollCompletedJobs())
   };
 }
 

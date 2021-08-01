@@ -14,3 +14,7 @@ export const SUBMIT_BACKGROUND_JOB = 'awsboilerplate/Home/SUBMIT_BACKGROUND_TASK
 export const BACKGROUND_JOB_ACCEPTED = 'awsboilerplate/Home/BACKGROUND_JOB_ACCEPTED';
 
 export const BACKGROUND_JOB_LAUNCH_FAIL = 'awsboilerplate/Home/BACKGROUND_JOB_LAUNCH_FAIL';
+
+export const BACKGROUND_JOB_RESULT = 'awsboilerplate/Home/BACKGROUND_JOB_RESULT';
+
+export const BACKGROUND_JOB_STATUS_POLL = 'awsboilerplate/Home/BACKGROUND_JOB_STATUS_POLL';

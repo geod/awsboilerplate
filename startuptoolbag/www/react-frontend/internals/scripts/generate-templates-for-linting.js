@@ -1,5 +1,5 @@
 /**
- * This script is for internal `react-boilerplate`'s usage.
+ * This script is for internal `react-frontend`'s usage.
  * It will run all generators in order to be able to lint them and detect
  * critical errors. Every generated component's name starts with 'RbGenerated'
  * and any modified file is backed up by a file with the same name but with the

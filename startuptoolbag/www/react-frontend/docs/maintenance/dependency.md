@@ -219,7 +219,7 @@ react-test-renderer                                     15.5.4
 ```bash
    ERROR in ./~/react-router-scroll/lib/StateStorage.js
    Module not found: Error: Can't resolve 'history/lib/DOMStateStorage' in '
-   /home/travis/build/gihrig/react-boilerplate/node_modules/react-router-scroll/lib'
+   /home/travis/build/gihrig/react-frontend/node_modules/react-router-scroll/lib'
     @ ./~/react-router-scroll/lib/StateStorage.js 5:23-61
     @ ./~/react-router-scroll/lib/ScrollBehaviorContext.js
     @ ./~/react-router-scroll/lib/useScroll.js
