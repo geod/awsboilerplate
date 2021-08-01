@@ -29,20 +29,39 @@ class FlexibleCloudFrontStack(core.Stack):
         # redirect
         # arecord apigateway
 
-        bucket_name = domain_name if domain_name != "" else None
+        hosted_zone = route53.HostedZone.from_hosted_zone_attributes(self, "HostedZone",
+                                                                         hosted_zone_id=hosted_zone_id,
+                                                                         zone_name=domain_name)
+
+        # SSL/TLS Certificate
+        # https://github.com/aws/aws-cdk/pull/8552
+        # Experimental vs 'Certificate' (which requires validation in the console)
+        tls_cert = certificatemanager.DnsValidatedCertificate(
+            self,
+            "SiteCertificate",
+            hosted_zone=hosted_zone,
+            domain_name=f'*.{domain_name}',
+            subject_alternative_names=[domain_name],
+            region='us-east-1',
+        )
+
         self.www_site_bucket = s3.Bucket(
             self,
             f'WWW2_Bucket_{domain_name}',
-            bucket_name=bucket_name,
+            bucket_name=domain_name,
             website_index_document='index.html',
             website_error_document='error.html',
             public_read_access=True,
             removal_policy=core.RemovalPolicy.DESTROY
         )
 
-        s3deploy.BucketDeployment(self, "DeployWebsite",
-                                  sources=[s3deploy.Source.asset("./startuptoolbag/www/react-frontend/build")],
-                                  destination_bucket=self.www_site_bucket)
+        # CloudFront distribution that provides HTTPS - for www
+        www_alias_configuration = cloudfront.AliasConfiguration(
+            acm_cert_ref=tls_cert.certificate_arn,
+            names=[f'www.{domain_name}'],
+            ssl_method=cloudfront.SSLMethod.SNI,
+            security_policy=cloudfront.SecurityPolicyProtocol.TLS_V1_1_2016
+        )
 
         www_source_configuration = cloudfront.SourceConfiguration(
             s3_origin_source=cloudfront.S3OriginConfig(
@@ -54,61 +73,41 @@ class FlexibleCloudFrontStack(core.Stack):
         www_distribution = cloudfront.CloudFrontWebDistribution(
             self,
             'SiteDistribution',
+            alias_configuration=www_alias_configuration, #This as added
             origin_configs=[www_source_configuration]
         )
 
+        route53.ARecord(
+            self,
+            'CloudFrontARecord',
+            zone=hosted_zone,
+            record_name=f'www.{domain_name}',  # site domain
+            target=aws_route53.RecordTarget.from_alias(aws_route53_targets.CloudFrontTarget(www_distribution))
+        )
+
+        s3deploy.BucketDeployment(self, "DeployWebsite",
+                                  sources=[s3deploy.Source.asset("./startuptoolbag/www/react-frontend/build")],
+                                  destination_bucket=self.www_site_bucket)
+
+        # NAKED site bucket which redirects to naked to www
+        redirect = aws_route53_patterns.HttpsRedirect(self, 'NakedRedirect',
+                                                      record_names=[domain_name],
+                                                      target_domain=f'www.{domain_name}',
+                                                      zone=hosted_zone,
+                                                      certificate=tls_cert)
+
+        # API Gateway
         self.rest_api = aws_apigateway.RestApi(self, 'RestApiGateway', deploy=False)
+        api_domain_name = f'api.{domain_name}'
+        domain = self.rest_api.add_domain_name('APIDomain', certificate=tls_cert, domain_name=api_domain_name)
 
-        if domain_name != "":
-            hosted_zone = route53.HostedZone.from_hosted_zone_attributes(self, "HostedZone",
-                                                                         hosted_zone_id=hosted_zone_id,
-                                                                         zone_name=domain_name)
-
-            # SSL/TLS Certificate
-            # https://github.com/aws/aws-cdk/pull/8552
-            # Experimental vs 'Certificate' (which requires validation in the console)
-            tls_cert = certificatemanager.DnsValidatedCertificate(
-                self,
-                "SiteCertificate",
-                hosted_zone=hosted_zone,
-                domain_name=f'*.{domain_name}',
-                subject_alternative_names=[domain_name],
-                region='us-east-1',
-            )
-
-            # CloudFront distribution that provides HTTPS - for www
-            www_alias_configuration = cloudfront.AliasConfiguration(
-                acm_cert_ref=tls_cert.certificate_arn,
-                names=[f'www.{domain_name}'],
-                ssl_method=cloudfront.SSLMethod.SNI,
-                security_policy=cloudfront.SecurityPolicyProtocol.TLS_V1_1_2016
-            )
-
-            route53.ARecord(
-                self,
-                'CloudFrontARecord',
-                zone=hosted_zone,
-                record_name=f'www.{domain_name}',  # site domain
-                target=aws_route53.RecordTarget.from_alias(aws_route53_targets.CloudFrontTarget(www_distribution))
-            )
-
-            # NAKED site bucket which redirects to naked to www
-            redirect = aws_route53_patterns.HttpsRedirect(self, 'NakedRedirect',
-                                                          record_names=[domain_name],
-                                                          target_domain=f'www.{domain_name}',
-                                                          zone=hosted_zone,
-                                                          certificate=tls_cert)
-
-            api_domain_name = f'api.{domain_name}'
-            domain = self.rest_api.add_domain_name('APIDomain', certificate=tls_cert, domain_name=api_domain_name)
-
-            route53.ARecord(
-                self,
-                'APIGWAliasRecord',
-                zone=hosted_zone,
-                record_name=api_domain_name,  # site domain
-                target=aws_route53.RecordTarget.from_alias(aws_route53_targets.ApiGatewayDomain(domain))
-            )
+        route53.ARecord(
+            self,
+            'APIGWAliasRecord',
+            zone=hosted_zone,
+            record_name=api_domain_name,  # site domain
+            target=aws_route53.RecordTarget.from_alias(aws_route53_targets.ApiGatewayDomain(domain))
+        )
 
 
 class APIGatewayDeployStack(core.Stack):
