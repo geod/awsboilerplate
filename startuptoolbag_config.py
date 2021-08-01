@@ -13,8 +13,8 @@ stack_lambda_s3processor_enabled = True
 
 # IF NOT set then the project will create a deployment without a domain name
 # IF SET then the project will automatically create cloud front distributions, DNS for etc for the domain
-website_domain_name = ""  # "startuptoolbag.com"
-hosted_zone_id = ""
+website_domain_name = "awsboilerplate.io"  # "awsboilerplate.io"
+hosted_zone_id = "Z0294872265LREBAVWK90"
 
 beta_environment = False
 
