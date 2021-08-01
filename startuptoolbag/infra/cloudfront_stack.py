@@ -41,7 +41,7 @@ class FlexibleCloudFrontStack(core.Stack):
         )
 
         s3deploy.BucketDeployment(self, "DeployWebsite",
-                                  sources=[s3deploy.Source.asset("./startuptoolbag/www/react-boilerplate/build")],
+                                  sources=[s3deploy.Source.asset("./startuptoolbag/www/react-frontend/build")],
                                   destination_bucket=self.www_site_bucket)
 
         www_source_configuration = cloudfront.SourceConfiguration(

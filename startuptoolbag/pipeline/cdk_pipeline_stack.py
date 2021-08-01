@@ -44,7 +44,7 @@ class CDKPipelineStack(core.Stack):
             source_artifact=self.source_output,
             cloud_assembly_artifact=cloud_assembly_artifact,
             install_command='npm install -g aws-cdk && pip install -r requirements.txt',
-            synth_command='cd $CODEBUILD_SRC_DIR && mkdir startuptoolbag/www/react-boilerplate/build && cdk synth',
+            synth_command='cd $CODEBUILD_SRC_DIR && mkdir startuptoolbag/www/react-frontend/build && cdk synth',
             additional_artifacts=[{'artifact': application_code, 'directory': './'}])
 
         """
