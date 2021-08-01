@@ -34,6 +34,11 @@ def handler(event, context):
         for i in response['Items']:
             print(json.dumps(i, cls=DecimalEncoder))
 
-    return {
-        'statusCode': 200,
+    response = {
+        "statusCode": 200,
+        "headers": {},
+        "body": json.dumps({
+            "message": "This is the message in a JSON object."
+        })
     }
+    return response

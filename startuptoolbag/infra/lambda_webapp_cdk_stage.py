@@ -122,7 +122,7 @@ class LambdaWebArchitectureStack(core.Stack):
 
         # Lambda to accept background job requests
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(
-            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda_sqs_handler"))
+            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda_job_acceptor"))
         background_task_acceptor_lambda = aws_lambda.Function(self,
                                                       id="lambdaTaskRequestHandlerFunction",
                                                       description="Handles/Valdates background requests and puts on SQS",
@@ -139,7 +139,7 @@ class LambdaWebArchitectureStack(core.Stack):
 
         # Create the Background Worker (to calculate)
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(
-            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda_sqs_bworker"))
+            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda_job_backgroundworker"))
         background_job_worker_lambda = aws_lambda.Function(self,
                                                   id="lambdaBackgroundWorker",
                                                   description="Pulls from SQS and is a background worker",
@@ -159,7 +159,7 @@ class LambdaWebArchitectureStack(core.Stack):
 
         # Create the Lambda Serving Job Results
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(
-            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda_dynamodb_server"))
+            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda_job_results"))
         background_job_result_lambda = aws_lambda.Function(self,
                                               id="lambdaResultProvider",
                                               description="Serves requests from Dynamo",

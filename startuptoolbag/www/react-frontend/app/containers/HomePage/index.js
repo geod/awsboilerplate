@@ -58,7 +58,7 @@ export function HomePage({
         </CenteredSection>
         <Section>
           <Form onSubmit={onSubmitBackgroundJob}>
-          Launch a background task (check if number is prime):
+          Launch a background task (check if the number is prime):
             <Input
                 id="numberprime"
                 type="number"
