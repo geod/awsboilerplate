@@ -32,6 +32,9 @@ import configureStore from './configureStore';
 // Import i18n messages
 import { translationMessages } from './i18n';
 
+import { makeServer } from "./server";
+
+
 // Observe loading of Open Sans (to remove open sans, remove the <link> tag in
 // the index.html file and this observer)
 const openSansObserver = new FontFaceObserver('Open Sans', {});
@@ -67,6 +70,8 @@ if (module.hot) {
     ReactDOM.unmountComponentAtNode(MOUNT_NODE);
     render(translationMessages);
   });
+
+  debugger;
 }
 
 // Chunked polyfill for browsers without Intl support
@@ -93,4 +98,10 @@ if (!window.Intl) {
 // we do not want it installed
 if (process.env.NODE_ENV === 'production') {
   require('offline-plugin/runtime').install(); // eslint-disable-line global-require
+}
+
+if (process.env.NODE_ENV === "development") {
+  // You can't use import in a conditional so we're using require() so no
+  // Mirage JS code will ever reach your production build.
+  window.server = makeServer();
 }

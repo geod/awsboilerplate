@@ -9,4 +9,8 @@
  * export const YOUR_ACTION_CONSTANT = 'yourproject/YourContainer/YOUR_ACTION_CONSTANT';
  */
 
-export const CHANGE_USERNAME = 'boilerplate/Home/CHANGE_USERNAME';
+export const SUBMIT_BACKGROUND_JOB = 'awsboilerplate/Home/SUBMIT_BACKGROUND_TASK';
+
+export const BACKGROUND_JOB_ACCEPTED = 'awsboilerplate/Home/BACKGROUND_JOB_ACCEPTED';
+
+export const BACKGROUND_JOB_LAUNCH_FAIL = 'awsboilerplate/Home/BACKGROUND_JOB_LAUNCH_FAIL';

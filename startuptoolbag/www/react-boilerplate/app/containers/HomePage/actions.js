@@ -15,7 +15,7 @@
  *    }
  */
 
-import { CHANGE_USERNAME } from './constants';
+import { SUBMIT_BACKGROUND_JOB, BACKGROUND_JOB_ACCEPTED, BACKGROUND_JOB_LAUNCH_FAIL } from './constants';
 
 /**
  * Changes the input field of the form
@@ -24,9 +24,23 @@ import { CHANGE_USERNAME } from './constants';
  *
  * @return {object} An action object with a type of CHANGE_USERNAME
  */
-export function changeUsername(username) {
+export function submitBackgroundJob(number) {
   return {
-    type: CHANGE_USERNAME,
-    username,
+    type: SUBMIT_BACKGROUND_JOB,
+    number,
+  };
+}
+
+export function backgroundJobAccepted(href, id) {
+  return {
+    type: BACKGROUND_JOB_ACCEPTED,
+    href: href,
+    id: id,
+  };
+}
+
+export function backgroundJobRejected(status) {
+  return {
+    type: BACKGROUND_JOB_LAUNCH_FAIL,
   };
 }

@@ -8,20 +8,21 @@
  */
 
 import produce from 'immer';
-import { CHANGE_USERNAME } from './constants';
+import { BACKGROUND_JOB_LAUNCH_FAIL, BACKGROUND_JOB_ACCEPTED, SUBMIT_BACKGROUND_JOB } from './constants';
 
 // The initial state of the App
 export const initialState = {
-  username: '',
+  jobs: []
 };
 
 /* eslint-disable default-case, no-param-reassign */
 const homeReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
-      case CHANGE_USERNAME:
-        // Delete prefixed '@' from the github username
-        draft.username = action.username.replace(/@/gi, '');
+      case SUBMIT_BACKGROUND_JOB:
+        break;
+      case BACKGROUND_JOB_ACCEPTED:
+        draft.jobs.push({"id": action.id, "href": action.href});
         break;
     }
   });

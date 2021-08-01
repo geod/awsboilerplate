@@ -31,19 +31,15 @@ end for distribution via CloudFront over S3. An API Gateway fronts lambdas servi
 ![Overview](documentation/AWS-Boilerplate-Architecture.jpg?raw=true "The Startup Toolbag")
 
 ### CICD Pipeline Process
-A custom CICD pipeline leverages foundational features provided by [CDK Pipelines](https://aws.amazon.com/blogs/developer/cdk-pipelines-continuous-delivery-for-aws-cdk-applications/).
+A custom CICD pipeline combines CodePipline, Codebuild and [CDK Pipeline](https://aws.amazon.com/blogs/developer/cdk-pipelines-continuous-delivery-for-aws-cdk-applications/). 
+
 ![TUB CICD](documentation/AWS-Boilerplate-Pipeline.jpg?raw=true "The Startup Toolbag CICD")
 
-The pipeline supports changing
-* application code (changing a lambda implementation) => pipeline will build and redeploy
-* infrastructure (adding a lambda, adding an API gateway route) => pipeline will synthesize the cloudformation, compare to the current infrastructure and execute changes (add, modify, delete) to bring in line with the desired state
-* pipeline definition (adding/deleting new stages to the pipeline logic) => one of the **first stages** of the pipeine is it will self-mutate to the new pipeline definition before running the rest of the pipeline
-
-#### Committing an Infrastructure Change
-
+The pipeline supports changing all three of the below use-cases:
+* Changing application code (changing the code behind a lambda) => Pipeline will deploy the new code
+* Changing infrastructure (adding/delete constructs - S3/API Gw/Lamba/Certificates) => The CDK stage of the pipeline diffs the current vs requested state and automatically generates and executes the cloud formation changeset
 ![TUB CICD](documentation/AWS-Boilerplate-Infrastructure-Mutate.jpg?raw=true "Infrastructure Mutate")
-
-#### Committing an Pipeline Change
+* Changing the pipeline stages (adding/deleting new stages) => An early stage of the pipeline reads new version of the pipeline, rebootstraps to the new pipeline before continuing
 ![TUB CICD](documentation/AWS-Boilerplate-Pipeline-Mutate.jpg?raw=true "Pipeline Mutate")
 
 ### Everything Is Code

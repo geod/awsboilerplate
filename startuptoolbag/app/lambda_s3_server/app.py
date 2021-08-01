@@ -1,7 +1,6 @@
 import boto3
 import os
-import uuid
-from urllib.parse import unquote_plus
+import json
 
 bucket_name = os.environ['BUCKET']
 s3_client = boto3.client('s3')
@@ -15,3 +14,4 @@ def handler(event, context):
     obj = s3.Object(bucket_name, item)
     body = obj.get()['Body'].read()
 
+    return json.dumps({"tweets": "foo"})
