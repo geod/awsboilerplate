@@ -113,8 +113,6 @@ class LambdaWebArchitectureStack(core.Stack):
 
         # Create the Queue
         sqs_queue = aws_sqs.Queue(self, "SQSQueue")
-
-        # Create the Handler
         lambda_sqs_role = aws_iam.Role(self, id='lambda-sqs-role',
                                        assumed_by=aws_iam.ServicePrincipal("lambda.amazonaws.com"),
                                        managed_policies=[aws_iam.ManagedPolicy.from_aws_managed_policy_name(
@@ -122,6 +120,7 @@ class LambdaWebArchitectureStack(core.Stack):
                                            aws_iam.ManagedPolicy.from_aws_managed_policy_name(
                                                'service-role/AWSLambdaSQSQueueExecutionRole')])
 
+        # Lambda to accept background job requests
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(
             directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda_sqs_handler"))
         background_task_acceptor_lambda = aws_lambda.Function(self,
@@ -136,10 +135,9 @@ class LambdaWebArchitectureStack(core.Stack):
                                                       memory_size=128,
                                                       reserved_concurrent_executions=10,
                                                       timeout=core.Duration.seconds(10))
-
         sqs_queue.grant_send_messages(background_task_acceptor_lambda)
 
-        # Create the Background Worker
+        # Create the Background Worker (to calculate)
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(
             directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda_sqs_bworker"))
         background_job_worker_lambda = aws_lambda.Function(self,
@@ -159,7 +157,7 @@ class LambdaWebArchitectureStack(core.Stack):
         background_job_worker_lambda.add_environment("TABLE_NAME", job_table.table_name)
         job_table.grant_write_data(background_job_worker_lambda)
 
-        # Create the Lambda Serving Requests
+        # Create the Lambda Serving Job Results
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(
             directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda_dynamodb_server"))
         background_job_result_lambda = aws_lambda.Function(self,
@@ -176,9 +174,11 @@ class LambdaWebArchitectureStack(core.Stack):
                                               timeout=core.Duration.seconds(10))
         job_table.grant_read_data(background_job_result_lambda)
 
-        foo_r = api_gateway.root.add_resource("jobs")
-        foo_r.add_method('GET', aws_apigateway.LambdaIntegration(background_job_result_lambda))
+        # Route the API gateway to the correct handlers
+        foo_r = api_gateway.root.add_resource("job")
         foo_r.add_method('POST', aws_apigateway.LambdaIntegration(background_task_acceptor_lambda))
+        foo_r.add_method('GET', aws_apigateway.LambdaIntegration(background_job_result_lambda))
+
 
 
 class LambdaRedisStack(core.Stack):

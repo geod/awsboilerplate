@@ -88,12 +88,12 @@ class CDKPipelineStack(core.Stack):
         Application stages in CDK are misleadingly named. They are meant to be self-contained environments (beta, prod)
         The stage deploys the full set of constructs (API GW, CloudFront, Lambdas, Dynamo, etc)
         """
-        if config.beta_environment:
-            beta_app_stage = LambdaWebArchitectureCDKStage(self, "startuptoolbag-beta", env=env,
-                                                           domain_name=None,
-                                                           hosted_zone_id=None)
-            beta_stage = self.cdk_pipeline.add_application_stage(beta_app_stage)
-            beta_stage.add_manual_approval_action(action_name="PromoteToProd")
+        # if config.beta_environment:
+        #     beta_app_stage = LambdaWebArchitectureCDKStage(self, "startuptoolbag-beta", env=env,
+        #                                                    domain_name=None,
+        #                                                    hosted_zone_id=None)
+        #     beta_stage = self.cdk_pipeline.add_application_stage(beta_app_stage)
+        #     beta_stage.add_manual_approval_action(action_name="PromoteToProd")
 
         prod_app_stage = LambdaWebArchitectureCDKStage(self, "startuptoolbag-prod", env=env,
                                                        domain_name=config.website_domain_name,
