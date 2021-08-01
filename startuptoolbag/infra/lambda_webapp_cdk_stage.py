@@ -57,7 +57,7 @@ class LambdaS3DataPipelineStack(core.Stack):
 
         # Simple 1 step data pipeline - raw_bucket => lambda_processor => processed_bucket
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(
-            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda-s3-processor"))
+            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda_s3_processor"))
         lambda_processor = aws_lambda.Function(self,
                                                id="lambdaS3DataProcessor",
                                                description="Processes Data Landed In S3",
@@ -80,7 +80,7 @@ class LambdaS3DataPipelineStack(core.Stack):
         # This is essentially an Object Lambda - https://aws.amazon.com/blogs/aws/introducing-amazon-s3-object-lambda-use-your-code-to-process-data-as-it-is-being-retrieved-from-s3/
         # TODO investigate when CDK support ObjectLambda or CDK Solutions Patterns
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(
-            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda-s3-server"))
+            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda_s3_server"))
         lambda_handler = aws_lambda.Function(self,
                                              id="lambdaS3Server",
                                              description="Handle API requests backed by S3",
@@ -123,9 +123,9 @@ class LambdaWebArchitectureStack(core.Stack):
                                                'service-role/AWSLambdaSQSQueueExecutionRole')])
 
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(
-            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda-sqs-handler"))
-        lambda_handler_function = aws_lambda.Function(self,
-                                                      id="lambdaSQSHandlerFunction",
+            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda_sqs_handler"))
+        background_task_acceptor_lambda = aws_lambda.Function(self,
+                                                      id="lambdaTaskRequestHandlerFunction",
                                                       description="Handles/Valdates background requests and puts on SQS",
                                                       code=ecr_image,
                                                       handler=aws_lambda.Handler.FROM_IMAGE,
@@ -137,13 +137,13 @@ class LambdaWebArchitectureStack(core.Stack):
                                                       reserved_concurrent_executions=10,
                                                       timeout=core.Duration.seconds(10))
 
-        sqs_queue.grant_send_messages(lambda_handler_function)
+        sqs_queue.grant_send_messages(background_task_acceptor_lambda)
 
         # Create the Background Worker
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(
-            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda-sqs-bworker"))
-        background_function = aws_lambda.Function(self,
-                                                  id="lambdaSQSDrivenBackgroundWorker",
+            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda_sqs_bworker"))
+        background_job_worker_lambda = aws_lambda.Function(self,
+                                                  id="lambdaBackgroundWorker",
                                                   description="Pulls from SQS and is a background worker",
                                                   code=ecr_image,
                                                   handler=aws_lambda.Handler.FROM_IMAGE,
@@ -155,16 +155,16 @@ class LambdaWebArchitectureStack(core.Stack):
                                                   memory_size=128,
                                                   reserved_concurrent_executions=10,
                                                   timeout=core.Duration.seconds(10))
-        background_function.add_event_source(eventsources.SqsEventSource(sqs_queue))
-        background_function.add_environment("TABLE_NAME", job_table.table_name)
-        job_table.grant_write_data(background_function)
+        background_job_worker_lambda.add_event_source(eventsources.SqsEventSource(sqs_queue))
+        background_job_worker_lambda.add_environment("TABLE_NAME", job_table.table_name)
+        job_table.grant_write_data(background_job_worker_lambda)
 
         # Create the Lambda Serving Requests
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(
-            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda-dynamodb-server"))
-        reader_function = aws_lambda.Function(self,
-                                              id="lambdaDynamo Server",
-                                              description="Handles API Requests backed by dynamo",
+            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda_dynamodb_server"))
+        background_job_result_lambda = aws_lambda.Function(self,
+                                              id="lambdaResultProvider",
+                                              description="Serves requests from Dynamo",
                                               code=ecr_image,
                                               handler=aws_lambda.Handler.FROM_IMAGE,
                                               runtime=aws_lambda.Runtime.FROM_IMAGE,
@@ -174,11 +174,11 @@ class LambdaWebArchitectureStack(core.Stack):
                                               memory_size=128,
                                               reserved_concurrent_executions=10,
                                               timeout=core.Duration.seconds(10))
-        job_table.grant_read_data(reader_function)
+        job_table.grant_read_data(background_job_result_lambda)
 
         foo_r = api_gateway.root.add_resource("jobs")
-        foo_r.add_method('GET', aws_apigateway.LambdaIntegration(reader_function))
-        foo_r.add_method('POST', aws_apigateway.LambdaIntegration(lambda_handler_function))
+        foo_r.add_method('GET', aws_apigateway.LambdaIntegration(background_job_result_lambda))
+        foo_r.add_method('POST', aws_apigateway.LambdaIntegration(background_task_acceptor_lambda))
 
 
 class LambdaRedisStack(core.Stack):
@@ -190,7 +190,8 @@ class LambdaRedisStack(core.Stack):
 
         self.redis = self.create_redis(vpc)
 
-        ecr_image = aws_lambda.EcrImageCode.from_asset_image(directory=os.path.join(os.getcwd(), "startuptoolbag/lambda-redis"))
+        ecr_image = aws_lambda.EcrImageCode.from_asset_image(directory=os.path.join(os.getcwd(),
+                                                                                    "startuptoolbag/app/lambda_redis"))
 
         lambda_vpc_role = aws_iam.Role(self, id='lambda-vpc-role2',
                                        assumed_by=aws_iam.ServicePrincipal("lambda.amazonaws.com"),
