@@ -12,7 +12,10 @@ phases:
       - echo Running npm build
       - pwd
       - npm run build
-artifacts:
-  files:
-     - ./*
-  base-directory: startuptoolbag/www/react-frontend/build
+      - cd ../../../
+      - pwd
+# Disabling this stage - no need for it as S3Deploy as part of CDK picks it up
+#artifacts:
+#  files:
+#     - ./*
+#  base-directory: startuptoolbag/www/react-frontend/build

@@ -87,6 +87,8 @@ class FlexibleCloudFrontStack(core.Stack):
 
         # https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_s3_deployment/README.html
         # INVALIDATES on deploy
+        # FIXME - for some reason this is generating CF that assumes the source bucket it the **cdk** bucket
+        # Hence there is an empty archive ....
         s3deploy.BucketDeployment(self, "DeployWebsite2",
                                   sources=[s3deploy.Source.asset("./startuptoolbag/www/react-frontend/build")],
                                   destination_bucket=self.www_site_bucket,
