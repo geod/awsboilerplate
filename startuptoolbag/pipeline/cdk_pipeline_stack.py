@@ -90,8 +90,7 @@ class CDKPipelineStack(core.Stack):
             build_spec=codebuild.BuildSpec.from_source_filename(filename='buildspec.yml'),
             environment=codebuild.BuildEnvironment(privileged=True),
             description='React Build',
-            timeout=core.Duration.minutes(15),
-            cache=codebuild.Cache.local()
+            timeout=core.Duration.minutes(15)
         )
         build_action = codepipeline_actions.CodeBuildAction(action_name="ReactBuild",
                                                                  project=codebuild_project,
