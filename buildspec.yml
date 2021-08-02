@@ -16,9 +16,9 @@ phases:
       - pwd
   post_build:
     commands:
+      - pwd
       - ls -lh startuptoolbag/www/react-frontend/build
-# Disabling this stage - no need for it as S3Deploy as part of CDK picks it up
-#artifacts:
-#  files:
-#     - ./*
-#  base-directory: startuptoolbag/www/react-frontend/build
+artifacts:
+  files:
+     - ./*
+  base-directory: startuptoolbag/www/react-frontend/build
