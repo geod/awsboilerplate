@@ -14,6 +14,9 @@ phases:
       - npm run build:quiet
       - cd ../../../
       - pwd
+  post_build:
+    commands:
+      - ls -lh startuptoolbag/www/react-frontend/build
 # Disabling this stage - no need for it as S3Deploy as part of CDK picks it up
 #artifacts:
 #  files:
