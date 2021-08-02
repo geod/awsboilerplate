@@ -11,7 +11,7 @@ phases:
     commands:
       - echo Running npm build
       - pwd
-      - npm run build
+      - npm run build:quiet
       - cd ../../../
       - pwd
 # Disabling this stage - no need for it as S3Deploy as part of CDK picks it up

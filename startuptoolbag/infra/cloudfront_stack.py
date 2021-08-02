@@ -89,8 +89,9 @@ class FlexibleCloudFrontStack(core.Stack):
         # INVALIDATES on deploy
         # FIXME - for some reason this is generating CF that assumes the source bucket it the **cdk** bucket
         # Hence there is an empty archive ....
+        # Codebuild source dir example CODEBUILD_SRC_DIR=/codebuild/output/src608723255/src
         s3deploy.BucketDeployment(self, "DeployWebsite2",
-                                  sources=[s3deploy.Source.asset("./startuptoolbag/www/react-frontend/build")],
+                                  sources=[s3deploy.Source.asset("./startup-toolbag/startuptoolbag/www/react-frontend/build")],
                                   destination_bucket=self.www_site_bucket,
                                   distribution=www_distribution)
 
