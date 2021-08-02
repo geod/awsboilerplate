@@ -85,9 +85,12 @@ class FlexibleCloudFrontStack(core.Stack):
             target=aws_route53.RecordTarget.from_alias(aws_route53_targets.CloudFrontTarget(www_distribution))
         )
 
-        s3deploy.BucketDeployment(self, "DeployWebsite",
+        # https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_s3_deployment/README.html
+        # INVALIDATES on deploy
+        s3deploy.BucketDeployment(self, "DeployWebsite2",
                                   sources=[s3deploy.Source.asset("./startuptoolbag/www/react-frontend/build")],
-                                  destination_bucket=self.www_site_bucket)
+                                  destination_bucket=self.www_site_bucket,
+                                  distribution=www_distribution)
 
         # NAKED site bucket which redirects to naked to www
         redirect = aws_route53_patterns.HttpsRedirect(self, 'NakedRedirect',
