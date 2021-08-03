@@ -63,6 +63,7 @@ aws-cdk.lambda-layer-awscli==1.92.0
 aws-cdk.pipelines==1.92.0
 aws-cdk.region-info==1.92.0
 aws-cdk.yaml-cfn==1.92.0
+aws-cdk.aws-iam==1.92.0
 boto3==1.17.44
 botocore==1.20.44
 cattrs==1.3.0
