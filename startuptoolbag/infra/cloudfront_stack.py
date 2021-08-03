@@ -17,7 +17,7 @@ import os
 
 class FlexibleCloudFrontStack(core.Stack):
 
-    def __init__(self, scope: core.Construct, id: str, domain_name, hosted_zone_id, react_artifact: code_pipeline.Artifact, **kwargs):
+    def __init__(self, scope: core.Construct, id: str, domain_name, hosted_zone_id, **kwargs):
         super().__init__(scope, id, **kwargs)
         # bucket
         # deployment

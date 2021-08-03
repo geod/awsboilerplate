@@ -80,8 +80,7 @@ class CDKPipelineStack(core.Stack):
         """
         prod_app_stage = LambdaWebArchitectureCDKStage(self, "startuptoolbag-prod", env=env,
                                                        domain_name=config.website_domain_name,
-                                                       hosted_zone_id=config.hosted_zone_id,
-                                                       react_artifact=react_artifact)
+                                                       hosted_zone_id=config.hosted_zone_id)
         prod_stage = self.cdk_pipeline.add_application_stage(prod_app_stage)
 
     def add_react_build(self, c_pipeline: code_pipeline.Pipeline, application_code: code_pipeline.Artifact):

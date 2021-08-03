@@ -19,10 +19,10 @@ from .cloudfront_stack import FlexibleCloudFrontStack, APIGatewayDeployStack
 
 class LambdaWebArchitectureCDKStage(core.Stage):
 
-    def __init__(self, scope: core.Construct, id: str, domain_name, hosted_zone_id, react_artifact: code_pipeline.Artifact, **kwargs):
+    def __init__(self, scope: core.Construct, id: str, domain_name, hosted_zone_id, **kwargs):
         super().__init__(scope, id, **kwargs)
 
-        self.cloud_front_stack = FlexibleCloudFrontStack(self, 'CloudFrontStack', domain_name, hosted_zone_id, react_artifact, **kwargs)
+        self.cloud_front_stack = FlexibleCloudFrontStack(self, 'CloudFrontStack', domain_name, hosted_zone_id, **kwargs)
 
         if startuptoolbag_config.stack_lambda_redis_enabled:
             self.lambda_redis_stack = LambdaRedisStack(self, 'LambdaRedisStack',
