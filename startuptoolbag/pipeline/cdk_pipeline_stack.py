@@ -89,7 +89,7 @@ class CDKPipelineStack(core.Stack):
 
         codebuild_role = aws_iam.Role(self, 'CodebuildServiceRole',
                                       assumed_by=aws_iam.ServicePrincipal("codebuild.amazonaws.com"))
-        codebuild_role.addToPolicy(aws_iam.PolicyStatement(resources= [wwwbucket.bucket_arn], actions=['s3:GetObject','s3:PutObject']));
+        codebuild_role.add_to_policy(aws_iam.PolicyStatement(resources=["*"], actions=['s3:GetObject','s3:PutObject']));
 
         #https://docs.aws.amazon.com/codebuild/latest/userguide/setting-up.html
         codebuild_project = codebuild.PipelineProject(

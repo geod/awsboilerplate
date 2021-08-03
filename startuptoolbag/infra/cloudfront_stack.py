@@ -55,11 +55,6 @@ class FlexibleCloudFrontStack(core.Stack):
             public_read_access=True,
             removal_policy=core.RemovalPolicy.DESTROY
         )
-        self.www_site_bucket.add_to_resource_policy(iam.PolicyStatement(
-            actions=["s3:GetObject", "s3:PutObject"],
-            resources=["*"],
-            principals=[]
-        ))
 
         # CloudFront distribution that provides HTTPS - for www
         www_alias_configuration = cloudfront.AliasConfiguration(
