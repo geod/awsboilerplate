@@ -23,4 +23,4 @@ phases:
 #      - aws cloudfront create-invalidation --distribution-id E2NLA9WMKZKPX4 --paths "/*"
 artifacts:
   files:
-     - **/*
+     - '**/*'
