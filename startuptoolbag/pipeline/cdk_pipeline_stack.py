@@ -34,7 +34,8 @@ class CDKPipelineStack(core.Stack):
         Rather than following the standard examples and creating a CDK Pipeline from the outset we need to create a standard
         code pipeline and add the CDK features onto that pipeline
         """
-        self.code_pipeline = code_pipeline.Pipeline(self, "codepipeline-project", restart_execution_on_update=True,
+        self.code_pipeline = code_pipeline.Pipeline(self, "codepipeline-project",
+                                                    restart_execution_on_update=True,
                                                     stages=[code_pipeline.StageProps(stage_name="Source",
                                                                                      actions=[source_action])])
 
@@ -95,9 +96,8 @@ class CDKPipelineStack(core.Stack):
         build_action = codepipeline_actions.CodeBuildAction(action_name="ReactBuild",
                                                                  project=codebuild_project,
                                                                  input=application_code,
-                                                                 outputs=[build_output_artifact])
-        deploy_action = codepipeline_actions.S3DeployAction(action_name="ReactDeploy",
-                                                            input=build_output_artifact,
-                                                            bucket=wwwbucket)
+                                                                 outputs=[build_output_artifact],
+                                                                environment_variables={"FOO": codebuild.BuildEnvironmentVariable(value="BAR")})
+
 
         self.cdk_pipeline.code_pipeline.add_stage(stage_name="ReactBuild", actions=[build_action])
