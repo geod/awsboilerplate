@@ -56,6 +56,11 @@ class FlexibleCloudFrontStack(core.Stack):
             removal_policy=core.RemovalPolicy.DESTROY
         )
 
+        s3deploy.BucketDeployment(self, "DeployWebsite",
+            sources=[s3deploy.Source.asset("./README.zip")],
+            destination_bucket=self.www_site_bucket,
+            distribution=self.www_site_bucket)
+
         # CloudFront distribution that provides HTTPS - for www
         www_alias_configuration = cloudfront.AliasConfiguration(
             acm_cert_ref=tls_cert.certificate_arn,

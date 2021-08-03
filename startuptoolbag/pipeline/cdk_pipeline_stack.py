@@ -51,6 +51,15 @@ class CDKPipelineStack(core.Stack):
             additional_artifacts=[{'artifact': application_code, 'directory': './'}])
 
         """
+        To add application builds we add a codebuild project to the pipeline. The one twist is that the project
+        leaves build artifacts on the local filesystem of codepipeline. 
+
+        We are going to pull these artifacts from this path and deploy to S3 within the CDK stage later in the pipeline
+        (this is why the application artifact builds need to run before the CDK stages)
+        """
+        react_code_build = self.add_react_build(self.code_pipeline, application_code)
+
+        """
         Adds CDK stages to the existing pipeline
         CDK pipelines stages added include 1) self-mutate on changes to this file 2) allows deployment of CDK constructs
         """
@@ -59,8 +68,6 @@ class CDKPipelineStack(core.Stack):
                                         code_pipeline=self.code_pipeline,
                                         synth_action=synth_action,
                                         self_mutating=True)
-
-
 
         env = {
             'account': config.account,
@@ -75,23 +82,15 @@ class CDKPipelineStack(core.Stack):
                                                        hosted_zone_id=config.hosted_zone_id)
         prod_stage = self.cdk_pipeline.add_application_stage(prod_app_stage)
 
-        """
-                To add application builds we add a codebuild project to the pipeline. The one twist is that the project
-                leaves build artifacts on the local filesystem of codepipeline. 
+    def add_react_build(self, c_pipeline: code_pipeline.Pipeline, application_code: code_pipeline.Artifact):
+        #
+        # codebuild_role = aws_iam.Role(self, 'CodebuildServiceRole',
+        #                               assumed_by=aws_iam.ServicePrincipal("codebuild.amazonaws.com"))
+        # codebuild_role.add_to_policy(
+        #     aws_iam.PolicyStatement(resources=["*"], actions=['s3:GetObject', 's3:PutObject']));
 
-                We are going to pull these artifacts from this path and deploy to S3 within the CDK stage later in the pipeline
-                (this is why the application artifact builds need to run before the CDK stages)
-                """
-        react_code_build = self.add_react_build(application_code, prod_app_stage.cloud_front_stack.www_site_bucket)
-
-    def add_react_build(self, application_code: code_pipeline.Artifact, wwwbucket):
         build_output_artifact = code_pipeline.Artifact()
-
-        codebuild_role = aws_iam.Role(self, 'CodebuildServiceRole',
-                                      assumed_by=aws_iam.ServicePrincipal("codebuild.amazonaws.com"))
-        codebuild_role.add_to_policy(aws_iam.PolicyStatement(resources=["*"], actions=['s3:GetObject','s3:PutObject']));
-
-        #https://docs.aws.amazon.com/codebuild/latest/userguide/setting-up.html
+        # https://docs.aws.amazon.com/codebuild/latest/userguide/setting-up.html
         codebuild_project = codebuild.PipelineProject(
             self,
             "startuptoolbag-CDKCodebuild",
@@ -100,14 +99,14 @@ class CDKPipelineStack(core.Stack):
             environment=codebuild.BuildEnvironment(privileged=True),
             description='React Build',
             timeout=core.Duration.minutes(15),
-            role=codebuild_role
+            # role=codebuild_role
         )
 
         build_action = codepipeline_actions.CodeBuildAction(action_name="ReactBuild",
-                                                                 project=codebuild_project,
-                                                                 input=application_code,
-                                                                 outputs=[build_output_artifact],
-                                                                environment_variables={"FOO": codebuild.BuildEnvironmentVariable(value="BAR")})
+                                                            project=codebuild_project,
+                                                            input=application_code,
+                                                            outputs=[build_output_artifact],
+                                                            environment_variables={
+                                                                "FOO": codebuild.BuildEnvironmentVariable(value="BAR")})
 
-
-        self.cdk_pipeline.code_pipeline.add_stage(stage_name="ReactBuild", actions=[build_action])
+        c_pipeline.add_stage(stage_name="ReactBuild", actions=[build_action])
