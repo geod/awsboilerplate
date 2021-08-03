@@ -69,7 +69,7 @@ class CDKPipelineStack(core.Stack):
         We are going to pull these artifacts from this path and deploy to S3 within the CDK stage later in the pipeline
         (this is why the application artifact builds need to run before the CDK stages)
         """
-        self.add_react_build(self.code_pipeline, application_code)
+        react_artifact = self.add_react_build(self.code_pipeline, application_code)
 
         env = {
             'account': config.account,
@@ -81,7 +81,8 @@ class CDKPipelineStack(core.Stack):
         """
         prod_app_stage = LambdaWebArchitectureCDKStage(self, "startuptoolbag-prod", env=env,
                                                        domain_name=config.website_domain_name,
-                                                       hosted_zone_id=config.hosted_zone_id)
+                                                       hosted_zone_id=config.hosted_zone_id,
+                                                       react_artifact=react_artifact)
         prod_stage = self.cdk_pipeline.add_application_stage(prod_app_stage)
 
     def add_react_build(self, c_pipeline: code_pipeline.Pipeline, application_code: code_pipeline.Artifact):
@@ -112,3 +113,4 @@ class CDKPipelineStack(core.Stack):
                                                                 "FOO": codebuild.BuildEnvironmentVariable(value="BAR")})
 
         c_pipeline.add_stage(stage_name="ReactBuild", actions=[build_action])
+        return build_output_artifact

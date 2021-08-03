@@ -9,7 +9,8 @@ from aws_cdk import (
     aws_s3,
     aws_sqs,
     aws_elasticache as elasticache,
-    aws_s3_notifications
+    aws_s3_notifications,
+    aws_codepipeline as code_pipeline
 )
 import aws_cdk.aws_lambda_event_sources as eventsources
 import startuptoolbag_config
@@ -18,10 +19,10 @@ from .cloudfront_stack import FlexibleCloudFrontStack, APIGatewayDeployStack
 
 class LambdaWebArchitectureCDKStage(core.Stage):
 
-    def __init__(self, scope: core.Construct, id: str, domain_name=None, hosted_zone_id=None, **kwargs):
+    def __init__(self, scope: core.Construct, id: str, domain_name, hosted_zone_id, react_artifact: code_pipeline.Artifact, **kwargs):
         super().__init__(scope, id, **kwargs)
 
-        self.cloud_front_stack = FlexibleCloudFrontStack(self, 'CloudFrontStack', domain_name, hosted_zone_id, **kwargs)
+        self.cloud_front_stack = FlexibleCloudFrontStack(self, 'CloudFrontStack', domain_name, hosted_zone_id, react_artifact, **kwargs)
 
         if startuptoolbag_config.stack_lambda_redis_enabled:
             self.lambda_redis_stack = LambdaRedisStack(self, 'LambdaRedisStack',

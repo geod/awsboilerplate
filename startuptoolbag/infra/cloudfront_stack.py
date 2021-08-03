@@ -9,13 +9,15 @@ from aws_cdk import (
     aws_route53_patterns,
     aws_route53_targets,
     aws_s3_deployment as s3deploy,
-    aws_iam as iam
+    aws_iam as iam,
+    aws_codepipeline as code_pipeline
 )
+import os
 
 
 class FlexibleCloudFrontStack(core.Stack):
 
-    def __init__(self, scope: core.Construct, id: str, domain_name=None, hosted_zone_id=None, **kwargs):
+    def __init__(self, scope: core.Construct, id: str, domain_name, hosted_zone_id, react_artifact: code_pipeline.Artifact, **kwargs):
         super().__init__(scope, id, **kwargs)
         # bucket
         # deployment
@@ -57,9 +59,12 @@ class FlexibleCloudFrontStack(core.Stack):
         )
 
         s3deploy.BucketDeployment(self, "DeployWebsite",
-            sources=[s3deploy.Source.asset("./README.zip")],
+            # sources=[s3deploy.Source.asset(os.path.abspath("./README.zip"))],
+            sources=[s3deploy.Source.bucket(s3.Bucket.from_bucket_name(self, "MyB", react_artifact.bucket_name), react_artifact.object_key)],
             destination_bucket=self.www_site_bucket,
             distribution=self.www_site_bucket)
+
+
 
         # CloudFront distribution that provides HTTPS - for www
         www_alias_configuration = cloudfront.AliasConfiguration(
@@ -91,15 +96,6 @@ class FlexibleCloudFrontStack(core.Stack):
             target=aws_route53.RecordTarget.from_alias(aws_route53_targets.CloudFrontTarget(www_distribution))
         )
 
-        # https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_s3_deployment/README.html
-        # INVALIDATES on deploy
-        # FIXME - for some reason this is generating CF that assumes the source bucket it the **cdk** bucket
-        # Hence there is an empty archive ....
-        # Codebuild source dir example CODEBUILD_SRC_DIR=/codebuild/output/src608723255/src
-        s3deploy.BucketDeployment(self, "DeployWebsite2",
-                                  sources=[s3deploy.Source.asset("./startuptoolbag/www/react-frontend/build")],
-                                  destination_bucket=self.www_site_bucket,
-                                  distribution=www_distribution)
 
         # NAKED site bucket which redirects to naked to www
         redirect = aws_route53_patterns.HttpsRedirect(self, 'NakedRedirect',
