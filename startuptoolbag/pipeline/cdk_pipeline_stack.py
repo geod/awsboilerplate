@@ -62,15 +62,6 @@ class CDKPipelineStack(core.Stack):
 
 
         """
-        To add application builds we add a codebuild project to the pipeline. The one twist is that the project
-        leaves build artifacts on the local filesystem of codepipeline. 
-
-        We are going to pull these artifacts from this path and deploy to S3 within the CDK stage later in the pipeline
-        (this is why the application artifact builds need to run before the CDK stages)
-        """
-        react_artifact = self.add_react_build(self.code_pipeline, self.source_output)
-
-        """
         Adds CDK stages to the existing pipeline
         CDK pipelines stages added include 1) self-mutate on changes to this file 2) allows deployment of CDK constructs
         """
