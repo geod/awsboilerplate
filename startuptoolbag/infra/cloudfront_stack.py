@@ -64,8 +64,6 @@ class FlexibleCloudFrontStack(core.Stack):
             destination_bucket=self.www_site_bucket,
             distribution=self.www_site_bucket)
 
-
-
         # CloudFront distribution that provides HTTPS - for www
         www_alias_configuration = cloudfront.AliasConfiguration(
             acm_cert_ref=tls_cert.certificate_arn,

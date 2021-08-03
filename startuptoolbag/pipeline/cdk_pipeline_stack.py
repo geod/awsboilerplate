@@ -41,10 +41,20 @@ class CDKPipelineStack(core.Stack):
                                                     stages=[code_pipeline.StageProps(stage_name="Source",
                                                                                      actions=[source_action])])
 
+        """
+            To add application builds we add a codebuild project to the pipeline. The one twist is that the project
+            leaves build artifacts on the local filesystem of codepipeline. 
+
+            We are going to pull these artifacts from this path and deploy to S3 within the CDK stage later in the pipeline
+            (this is why the application artifact builds need to run before the CDK stages)
+        """
+        post_react_build_artifact = self.add_react_build(self.code_pipeline, self.source_output)
+
         application_code = code_pipeline.Artifact('application_code')
         cloud_assembly_artifact = code_pipeline.Artifact('cloudformation_output')
         synth_action = SimpleSynthAction(
-            source_artifact=self.source_output,
+            # source_artifact=self.source_output,post_react_build_artifact
+            source_artifact=post_react_build_artifact,
             cloud_assembly_artifact=cloud_assembly_artifact,
             install_command='npm install -g aws-cdk && pip install -r requirements.txt',
             synth_command='cd $CODEBUILD_SRC_DIR && mkdir startuptoolbag/www/react-frontend/build && cdk synth',
