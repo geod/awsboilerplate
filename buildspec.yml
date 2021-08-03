@@ -4,12 +4,12 @@ phases:
   pre_build:
     commands:
       - cd startuptoolbag/www/react-frontend
-      - echo Running NPM Install
+      - echo Running NPM Install!!
       - pwd
       - npm install
   build:
     commands:
-      - echo Running npm build
+      - echo Running npm build!!
       - pwd
       - npm run build:quiet
       - cd ../../../
