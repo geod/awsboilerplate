@@ -59,8 +59,8 @@ class FlexibleCloudFrontStack(core.Stack):
         )
 
         s3deploy.BucketDeployment(self, "DeployWebsite",
-            # sources=[s3deploy.Source.asset(os.path.abspath("./README.zip"))],
-            sources=[s3deploy.Source.bucket(s3.Bucket.from_bucket_name(self, "MyB", react_artifact.bucket_name), react_artifact.object_key)],
+            sources=[s3deploy.Source.asset(os.path.abspath("startuptoolbag/www/react-frontend/README.zip"))],
+            # sources=[s3deploy.Source.bucket(s3.Bucket.from_bucket_name(self, "MyB", react_artifact.bucket_name), react_artifact.object_key)],
             destination_bucket=self.www_site_bucket,
             distribution=self.www_site_bucket)
 
