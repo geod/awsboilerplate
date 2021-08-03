@@ -58,7 +58,7 @@ class CDKPipelineStack(core.Stack):
         We are going to pull these artifacts from this path and deploy to S3 within the CDK stage later in the pipeline
         (this is why the application artifact builds need to run before the CDK stages)
         """
-        react_artifact = self.add_react_build(self.code_pipeline, application_code)
+        react_artifact = self.add_react_build(self.code_pipeline, self.source_output)
 
         """
         Adds CDK stages to the existing pipeline
