@@ -50,14 +50,7 @@ class CDKPipelineStack(core.Stack):
             synth_command='cd $CODEBUILD_SRC_DIR && mkdir startuptoolbag/www/react-frontend/build && cdk synth',
             additional_artifacts=[{'artifact': application_code, 'directory': './'}])
 
-        """
-        To add application builds we add a codebuild project to the pipeline. The one twist is that the project
-        leaves build artifacts on the local filesystem of codepipeline. 
 
-        We are going to pull these artifacts from this path and deploy to S3 within the CDK stage later in the pipeline
-        (this is why the application artifact builds need to run before the CDK stages)
-        """
-        react_code_build = self.add_react_build(self.code_pipeline, application_code)
 
         """
         Adds CDK stages to the existing pipeline
@@ -68,6 +61,15 @@ class CDKPipelineStack(core.Stack):
                                         code_pipeline=self.code_pipeline,
                                         synth_action=synth_action,
                                         self_mutating=True)
+
+        """
+        To add application builds we add a codebuild project to the pipeline. The one twist is that the project
+        leaves build artifacts on the local filesystem of codepipeline. 
+
+        We are going to pull these artifacts from this path and deploy to S3 within the CDK stage later in the pipeline
+        (this is why the application artifact builds need to run before the CDK stages)
+        """
+        self.add_react_build(self.code_pipeline, application_code)
 
         env = {
             'account': config.account,
