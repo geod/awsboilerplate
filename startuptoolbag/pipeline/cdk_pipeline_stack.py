@@ -1,5 +1,7 @@
-from aws_cdk import (core, aws_codebuild as codebuild, aws_codepipeline_actions as codepipeline_actions,
-                     aws_codepipeline as code_pipeline)
+from aws_cdk import (core, aws_codebuild as codebuild,
+                     aws_codepipeline_actions as codepipeline_actions,
+                     aws_codepipeline as code_pipeline,
+                     aws_iam)
 from aws_cdk.pipelines import CdkPipeline, SimpleSynthAction
 from startuptoolbag.infra.lambda_webapp_cdk_stage import LambdaWebArchitectureCDKStage
 import startuptoolbag_config as config
@@ -84,6 +86,12 @@ class CDKPipelineStack(core.Stack):
 
     def add_react_build(self, application_code: code_pipeline.Artifact, wwwbucket):
         build_output_artifact = code_pipeline.Artifact()
+
+        codebuild_role = aws_iam.Role(self, 'CodebuildServiceRole',
+                                      assumed_by=aws_iam.ServicePrincipal("codebuild.amazonaws.com"))
+        codebuild_role.addToPolicy(aws_iam.PolicyStatement(resources= [wwwbucket.bucket_arn], actions=['s3:GetObject','s3:PutObject']));
+
+        #https://docs.aws.amazon.com/codebuild/latest/userguide/setting-up.html
         codebuild_project = codebuild.PipelineProject(
             self,
             "startuptoolbag-CDKCodebuild",
@@ -91,8 +99,10 @@ class CDKPipelineStack(core.Stack):
             build_spec=codebuild.BuildSpec.from_source_filename(filename='buildspec.yml'),
             environment=codebuild.BuildEnvironment(privileged=True),
             description='React Build',
-            timeout=core.Duration.minutes(15)
+            timeout=core.Duration.minutes(15),
+            role=codebuild_role
         )
+
         build_action = codepipeline_actions.CodeBuildAction(action_name="ReactBuild",
                                                                  project=codebuild_project,
                                                                  input=application_code,

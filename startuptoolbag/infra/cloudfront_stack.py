@@ -58,7 +58,7 @@ class FlexibleCloudFrontStack(core.Stack):
         self.www_site_bucket.add_to_resource_policy(iam.PolicyStatement(
             actions=["s3:GetObject", "s3:PutObject"],
             resources=["*"],
-            principals=[iam.ServicePrincipal("codebuild.amazonaws.com")]
+            principals=[]
         ))
 
         # CloudFront distribution that provides HTTPS - for www
