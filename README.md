@@ -12,7 +12,7 @@ When you have a new project or idea - you want to focus on the idea not configur
  [serverless web application](https://aws.amazon.com/lambda/resources/refarch/refarch-webapp/) is a very popular pattern
   for building dynamic sites/applications. However, there remains **a lot** of setup to get this fully running: 
   cloudfront, s3 buckets, route53, certificates, API gateways, lambdas, 
-code build and assembling a react/redux web stack and integrating it with codebuild, CICD, etc.  
+code build and assembling a react/redux web stack and integrating it with codebuild, CICD, etc. This setup can take hours or days depending on experience and the sophistication of the setup. The console approach is not repeatable and cloudformation and terraform have a steep learning curve and are not developer friendly.
  
 Awsboilerplate provides a serverless web architecture **and** development experience that is deployable in a few commands.
 It includes:
