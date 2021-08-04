@@ -13,7 +13,7 @@ from aws_cdk import (
     aws_codepipeline as code_pipeline
 )
 import aws_cdk.aws_lambda_event_sources as eventsources
-import startuptoolbag_config
+import awsboilerplate_config
 from .cloudfront_stack import FlexibleCloudFrontStack, APIGatewayDeployStack
 
 
@@ -24,17 +24,17 @@ class LambdaWebArchitectureCDKStage(core.Stage):
 
         self.cloud_front_stack = FlexibleCloudFrontStack(self, 'CloudFrontStack', domain_name, hosted_zone_id, **kwargs)
 
-        if startuptoolbag_config.stack_lambda_redis_enabled:
+        if awsboilerplate_config.stack_lambda_redis_enabled:
             self.lambda_redis_stack = LambdaRedisStack(self, 'LambdaRedisStack',
                                                        api_gateway=self.cloud_front_stack.rest_api,
                                                     **kwargs)
 
-        if startuptoolbag_config.stack_lambda_webarchitecture_enabled:
+        if awsboilerplate_config.stack_lambda_webarchitecture_enabled:
             self.lambda_sns_stack = LambdaWebArchitectureStack(self, 'LambdaWebArchitectureStack',
                                                                api_gateway=self.cloud_front_stack.rest_api,
                                                                **kwargs)
 
-        if startuptoolbag_config.stack_lambda_s3processor_enabled:
+        if awsboilerplate_config.stack_lambda_s3processor_enabled:
             self.lambda_data_stack = LambdaS3DataPipelineStack(self, 'LambdaS3DataPipelineStack',
                                                                api_gateway=self.cloud_front_stack.rest_api,
                                                                **kwargs)
@@ -58,7 +58,7 @@ class LambdaS3DataPipelineStack(core.Stack):
 
         # Simple 1 step data pipeline - raw_bucket => lambda_processor => processed_bucket
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(
-            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda_s3_processor"))
+            directory=os.path.join(os.getcwd(), "awsboilerplate/app/lambda_s3_processor"))
         lambda_processor = aws_lambda.Function(self,
                                                id="lambdaS3DataProcessor",
                                                description="Processes Data Landed In S3",
@@ -81,7 +81,7 @@ class LambdaS3DataPipelineStack(core.Stack):
         # This is essentially an Object Lambda - https://aws.amazon.com/blogs/aws/introducing-amazon-s3-object-lambda-use-your-code-to-process-data-as-it-is-being-retrieved-from-s3/
         # TODO investigate when CDK support ObjectLambda or CDK Solutions Patterns
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(
-            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda_s3_server"))
+            directory=os.path.join(os.getcwd(), "awsboilerplate/app/lambda_s3_server"))
         lambda_handler = aws_lambda.Function(self,
                                              id="lambdaS3Server",
                                              description="Handle API requests backed by S3",
@@ -123,7 +123,7 @@ class LambdaWebArchitectureStack(core.Stack):
 
         # Lambda to accept background job requests
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(
-            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda_job_acceptor"))
+            directory=os.path.join(os.getcwd(), "awsboilerplate/app/lambda_job_acceptor"))
         background_task_acceptor_lambda = aws_lambda.Function(self,
                                                       id="lambdaTaskRequestHandlerFunction",
                                                       description="Handles/Valdates background requests and puts on SQS",
@@ -140,7 +140,7 @@ class LambdaWebArchitectureStack(core.Stack):
 
         # Create the Background Worker (to calculate)
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(
-            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda_job_backgroundworker"))
+            directory=os.path.join(os.getcwd(), "awsboilerplate/app/lambda_job_backgroundworker"))
         background_job_worker_lambda = aws_lambda.Function(self,
                                                   id="lambdaBackgroundWorker",
                                                   description="Pulls from SQS and is a background worker",
@@ -160,7 +160,7 @@ class LambdaWebArchitectureStack(core.Stack):
 
         # Create the Lambda Serving Job Results
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(
-            directory=os.path.join(os.getcwd(), "startuptoolbag/app/lambda_job_results"))
+            directory=os.path.join(os.getcwd(), "awsboilerplate/app/lambda_job_results"))
         background_job_result_lambda = aws_lambda.Function(self,
                                               id="lambdaResultProvider",
                                               description="Serves requests from Dynamo",
@@ -192,7 +192,7 @@ class LambdaRedisStack(core.Stack):
         self.redis = self.create_redis(vpc)
 
         ecr_image = aws_lambda.EcrImageCode.from_asset_image(directory=os.path.join(os.getcwd(),
-                                                                                    "startuptoolbag/app/lambda_redis"))
+                                                                                    "awsboilerplate/app/lambda_redis"))
 
         lambda_vpc_role = aws_iam.Role(self, id='lambda-vpc-role2',
                                        assumed_by=aws_iam.ServicePrincipal("lambda.amazonaws.com"),
@@ -247,7 +247,7 @@ class LambdaRedisStack(core.Stack):
             engine="redis",
             cache_node_type="cache.t2.micro",
             num_cache_nodes=1,
-            cluster_name="startuptoolbag-redis",
+            cluster_name="awsboilerplate-redis",
             vpc_security_group_ids=[redis_security_group.security_group_id],
             cache_subnet_group_name=redis_subnet_group.cache_subnet_group_name,
             cache_parameter_group_name=redis_parameter_group.ref,

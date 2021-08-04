@@ -1,7 +1,8 @@
-# Configuration for startuptoolbag. Used by cdk_pipeline_stack.py and app.py
+# Configuration for awsboilerplate. Used by cdk_pipeline_stack.py and app.py
 
+# When you fork the repository point to your username/fork name
 github_user = "geod"
-github_repo = "startup-toolbag"
+github_repo = "awsboilerplate"
 # NOTE - the github token is stored as a secret in secret manager
 
 account = "390589559702"

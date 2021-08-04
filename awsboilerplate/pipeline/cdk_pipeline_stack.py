@@ -3,8 +3,8 @@ from aws_cdk import (core, aws_codebuild as codebuild,
                      aws_codepipeline as code_pipeline,
                      aws_iam)
 from aws_cdk.pipelines import CdkPipeline, SimpleSynthAction
-from startuptoolbag.infra.lambda_webapp_cdk_stage import LambdaWebArchitectureCDKStage
-import startuptoolbag_config as config
+from awsboilerplate.infra.lambda_webapp_cdk_stage import LambdaWebArchitectureCDKStage
+import awsboilerplate_config
 
 
 class CDKPipelineStack(core.Stack):
@@ -14,10 +14,10 @@ class CDKPipelineStack(core.Stack):
 
         self.source_output = code_pipeline.Artifact()
         source_action = codepipeline_actions.GitHubSourceAction(action_name="GitHub_Source",
-                                                                owner=config.github_user,
-                                                                repo=config.github_repo,
+                                                                owner=awsboilerplate_config.github_user,
+                                                                repo=awsboilerplate_config.github_repo,
                                                                 oauth_token=core.SecretValue.secrets_manager(
-                                                                    'startuptoolbag-github-oath-token'),
+                                                                    'awsboilerplate-github-oath-token'),
                                                                 output=self.source_output,
                                                                 branch='master')
 
@@ -65,23 +65,23 @@ class CDKPipelineStack(core.Stack):
         Adds CDK stages to the existing pipeline
         CDK pipelines stages added include 1) self-mutate on changes to this file 2) allows deployment of CDK constructs
         """
-        self.cdk_pipeline = CdkPipeline(self, "startuptoolbag-cdk-pipeline-project",
+        self.cdk_pipeline = CdkPipeline(self, "awsboilerplate-cdk-pipeline-project",
                                         cloud_assembly_artifact=cloud_assembly_artifact,
                                         code_pipeline=self.code_pipeline,
                                         synth_action=synth_action,
                                         self_mutating=True)
 
         env = {
-            'account': config.account,
-            'region': config.region,
+            'account': awsboilerplate_config.account,
+            'region': awsboilerplate_config.region,
         }
         """
         Application stages in CDK are misleadingly named. They are meant to be self-contained environments (beta, prod)
         The stage deploys the full set of constructs (API GW, CloudFront, Lambdas, Dynamo, etc)
         """
-        prod_app_stage = LambdaWebArchitectureCDKStage(self, "startuptoolbag-prod", env=env,
-                                                       domain_name=config.website_domain_name,
-                                                       hosted_zone_id=config.hosted_zone_id)
+        prod_app_stage = LambdaWebArchitectureCDKStage(self, "awsboilerplate-prod", env=env,
+                                                       domain_name=awsboilerplate_config.website_domain_name,
+                                                       hosted_zone_id=awsboilerplate_config.hosted_zone_id)
         prod_stage = self.cdk_pipeline.add_application_stage(prod_app_stage)
 
     def add_react_build(self, c_pipeline: code_pipeline.Pipeline, application_code: code_pipeline.Artifact):
@@ -95,8 +95,8 @@ class CDKPipelineStack(core.Stack):
         # https://docs.aws.amazon.com/codebuild/latest/userguide/setting-up.html
         codebuild_project = codebuild.PipelineProject(
             self,
-            "startuptoolbag-CDKCodebuild",
-            project_name="startuptoolbag-CodebuildProject",
+            "awsboilerplate-CDKCodebuild",
+            project_name="awsboilerplate-CodebuildProject",
             build_spec=codebuild.BuildSpec.from_source_filename(filename='buildspec.yml'),
             environment=codebuild.BuildEnvironment(privileged=True),
             description='React Build',

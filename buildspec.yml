@@ -3,7 +3,7 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - cd startuptoolbag/www/react-frontend
+      - cd awsboilerplate/www/react-frontend
       - echo Running NPM Install!!
       - pwd
       - npm install
@@ -18,8 +18,8 @@ phases:
     commands:
       - echo Uploading React Build to Bucket
       - pwd
-      - ls -lh startuptoolbag/www/react-frontend/build
-#      - aws s3 cp startuptoolbag/www/react-frontend/build s3://awsboilerplate.io --recursive
+      - ls -lh awsboilerplate/www/react-frontend/build
+#      - aws s3 cp awsboilerplate/www/react-frontend/build s3://awsboilerplate.io --recursive
 #      - aws cloudfront create-invalidation --distribution-id E2NLA9WMKZKPX4 --paths "/*"
 artifacts:
   files:

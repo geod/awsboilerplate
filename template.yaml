@@ -18,7 +18,7 @@ Resources:
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Pipeline/ArtifactsBucketEncryptionKey/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Pipeline/ArtifactsBucketEncryptionKey/Resource
   startuptoolbagpipelineprojectPipelineArtifactsBucketEncryptionKeyAlias7959B049:
     Type: AWS::KMS::Alias
     Properties:
@@ -30,7 +30,7 @@ Resources:
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Pipeline/ArtifactsBucketEncryptionKeyAlias/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Pipeline/ArtifactsBucketEncryptionKeyAlias/Resource
   startuptoolbagpipelineprojectPipelineArtifactsBucketA41FC555:
     Type: AWS::S3::Bucket
     Properties:
@@ -50,7 +50,7 @@ Resources:
     UpdateReplacePolicy: Retain
     DeletionPolicy: Retain
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Pipeline/ArtifactsBucket/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Pipeline/ArtifactsBucket/Resource
   startuptoolbagpipelineprojectPipelineRole6F99A7AE:
     Type: AWS::IAM::Role
     Properties:
@@ -62,7 +62,7 @@ Resources:
               Service: codepipeline.amazonaws.com
         Version: "2012-10-17"
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Pipeline/Role/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Pipeline/Role/Resource
   startuptoolbagpipelineprojectPipelineRoleDefaultPolicyED16B60E:
     Type: AWS::IAM::Policy
     Properties:
@@ -140,7 +140,7 @@ Resources:
       Roles:
         - Ref: startuptoolbagpipelineprojectPipelineRole6F99A7AE
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Pipeline/Role/DefaultPolicy/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Pipeline/Role/DefaultPolicy/Resource
   startuptoolbagpipelineprojectPipelineDF278E11:
     Type: AWS::CodePipeline::Pipeline
     Properties:
@@ -159,7 +159,7 @@ Resources:
                 Owner: geod
                 Repo: startup-toolbag
                 Branch: master
-                OAuthToken: "{{resolve:secretsmanager:startuptoolbag-github-oath-token:SecretString:::}}"
+                OAuthToken: "{{resolve:secretsmanager:awsboilerplate-github-oath-token:SecretString:::}}"
                 PollForSourceChanges: false
               Name: GitHub_Source
               OutputArtifacts:
@@ -305,7 +305,7 @@ Resources:
                       - :iam::390589559702:role/cdk-hnb659fds-cfn-exec-role-390589559702-us-east-1
                 ActionMode: CHANGE_SET_REPLACE
                 ChangeSetName: PipelineChange
-                TemplatePath: cloudformation_output::assembly-startuptoolbag-app-cdk-stage/startuptoolbagappcdkstageLambdaS3DataPipelineStack247D2F67.template.json
+                TemplatePath: cloudformation_output::assembly-awsboilerplate-app-cdk-stage/startuptoolbagappcdkstageLambdaS3DataPipelineStack247D2F67.template.json
               InputArtifacts:
                 - Name: cloudformation_output
               Name: LambdaS3DataPipelineStack.Prepare
@@ -349,7 +349,7 @@ Resources:
                       - :iam::390589559702:role/cdk-hnb659fds-cfn-exec-role-390589559702-us-east-1
                 ActionMode: CHANGE_SET_REPLACE
                 ChangeSetName: PipelineChange
-                TemplatePath: cloudformation_output::assembly-startuptoolbag-app-cdk-stage/startuptoolbagappcdkstageLambdaWebArchitectureStackCC579195.template.json
+                TemplatePath: cloudformation_output::assembly-awsboilerplate-app-cdk-stage/startuptoolbagappcdkstageLambdaWebArchitectureStackCC579195.template.json
               InputArtifacts:
                 - Name: cloudformation_output
               Name: LambdaWebArchitectureStack.Prepare
@@ -393,7 +393,7 @@ Resources:
                       - :iam::390589559702:role/cdk-hnb659fds-cfn-exec-role-390589559702-us-east-1
                 ActionMode: CHANGE_SET_REPLACE
                 ChangeSetName: PipelineChange
-                TemplatePath: cloudformation_output::assembly-startuptoolbag-app-cdk-stage/startuptoolbagappcdkstageRawCloudFrontStack543B9E81.template.json
+                TemplatePath: cloudformation_output::assembly-awsboilerplate-app-cdk-stage/startuptoolbagappcdkstageRawCloudFrontStack543B9E81.template.json
               InputArtifacts:
                 - Name: cloudformation_output
               Name: RawCloudFrontStack.Prepare
@@ -437,7 +437,7 @@ Resources:
                       - :iam::390589559702:role/cdk-hnb659fds-cfn-exec-role-390589559702-us-east-1
                 ActionMode: CHANGE_SET_REPLACE
                 ChangeSetName: PipelineChange
-                TemplatePath: cloudformation_output::assembly-startuptoolbag-app-cdk-stage/startuptoolbagappcdkstageAPIDeployStack5033053D.template.json
+                TemplatePath: cloudformation_output::assembly-awsboilerplate-app-cdk-stage/startuptoolbagappcdkstageAPIDeployStack5033053D.template.json
               InputArtifacts:
                 - Name: cloudformation_output
               Name: APIDeployStack.Prepare
@@ -520,13 +520,13 @@ Resources:
       - startuptoolbagpipelineprojectPipelineRoleDefaultPolicyED16B60E
       - startuptoolbagpipelineprojectPipelineRole6F99A7AE
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Pipeline/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Pipeline/Resource
   startuptoolbagpipelineprojectPipelineSourceGitHubSourceWebhookResourceC5292E3C:
     Type: AWS::CodePipeline::Webhook
     Properties:
       Authentication: GITHUB_HMAC
       AuthenticationConfiguration:
-        SecretToken: "{{resolve:secretsmanager:startuptoolbag-github-oath-token:SecretString:::}}"
+        SecretToken: "{{resolve:secretsmanager:awsboilerplate-github-oath-token:SecretString:::}}"
       Filters:
         - JsonPath: $.ref
           MatchEquals: refs/heads/{Branch}
@@ -536,7 +536,7 @@ Resources:
       TargetPipelineVersion: 1
       RegisterWithThirdParty: true
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Pipeline/Source/GitHub_Source/WebhookResource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Pipeline/Source/GitHub_Source/WebhookResource
   startuptoolbagpipelineprojectPipelineBuildSynthCodePipelineActionRole7E9A3BBA:
     Type: AWS::IAM::Role
     Properties:
@@ -553,7 +553,7 @@ Resources:
                     - :iam::390589559702:root
         Version: "2012-10-17"
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Pipeline/Build/Synth/CodePipelineActionRole/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Pipeline/Build/Synth/CodePipelineActionRole/Resource
   startuptoolbagpipelineprojectPipelineBuildSynthCodePipelineActionRoleDefaultPolicyC2234241:
     Type: AWS::IAM::Policy
     Properties:
@@ -573,7 +573,7 @@ Resources:
       Roles:
         - Ref: startuptoolbagpipelineprojectPipelineBuildSynthCodePipelineActionRole7E9A3BBA
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Pipeline/Build/Synth/CodePipelineActionRole/DefaultPolicy/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Pipeline/Build/Synth/CodePipelineActionRole/DefaultPolicy/Resource
   startuptoolbagpipelineprojectPipelineBuildSynthCdkBuildProjectRole904CE329:
     Type: AWS::IAM::Role
     Properties:
@@ -585,7 +585,7 @@ Resources:
               Service: codebuild.amazonaws.com
         Version: "2012-10-17"
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Pipeline/Build/Synth/CdkBuildProject/Role/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Pipeline/Build/Synth/CdkBuildProject/Role/Resource
   startuptoolbagpipelineprojectPipelineBuildSynthCdkBuildProjectRoleDefaultPolicyC5EB3595:
     Type: AWS::IAM::Policy
     Properties:
@@ -669,7 +669,7 @@ Resources:
       Roles:
         - Ref: startuptoolbagpipelineprojectPipelineBuildSynthCdkBuildProjectRole904CE329
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Pipeline/Build/Synth/CdkBuildProject/Role/DefaultPolicy/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Pipeline/Build/Synth/CdkBuildProject/Role/DefaultPolicy/Resource
   startuptoolbagpipelineprojectPipelineBuildSynthCdkBuildProject7084B7DA:
     Type: AWS::CodeBuild::Project
     Properties:
@@ -720,7 +720,7 @@ Resources:
           - startuptoolbagpipelineprojectPipelineArtifactsBucketEncryptionKeyCA31894C
           - Arn
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Pipeline/Build/Synth/CdkBuildProject/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Pipeline/Build/Synth/CdkBuildProject/Resource
   startuptoolbagpipelineprojectPipelineUpdatePipelineSelfMutateCodePipelineActionRole1658B9B1:
     Type: AWS::IAM::Role
     Properties:
@@ -737,7 +737,7 @@ Resources:
                     - :iam::390589559702:root
         Version: "2012-10-17"
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Pipeline/UpdatePipeline/SelfMutate/CodePipelineActionRole/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Pipeline/UpdatePipeline/SelfMutate/CodePipelineActionRole/Resource
   startuptoolbagpipelineprojectPipelineUpdatePipelineSelfMutateCodePipelineActionRoleDefaultPolicy577AAFA1:
     Type: AWS::IAM::Policy
     Properties:
@@ -757,7 +757,7 @@ Resources:
       Roles:
         - Ref: startuptoolbagpipelineprojectPipelineUpdatePipelineSelfMutateCodePipelineActionRole1658B9B1
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Pipeline/UpdatePipeline/SelfMutate/CodePipelineActionRole/DefaultPolicy/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Pipeline/UpdatePipeline/SelfMutate/CodePipelineActionRole/DefaultPolicy/Resource
   startuptoolbagpipelineprojectPipelineReactBuildCodePipelineActionRole7310E8B7:
     Type: AWS::IAM::Role
     Properties:
@@ -774,7 +774,7 @@ Resources:
                     - :iam::390589559702:root
         Version: "2012-10-17"
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Pipeline/ReactBuild/ReactBuild/CodePipelineActionRole/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Pipeline/ReactBuild/ReactBuild/CodePipelineActionRole/Resource
   startuptoolbagpipelineprojectPipelineReactBuildCodePipelineActionRoleDefaultPolicyD9F75F0B:
     Type: AWS::IAM::Policy
     Properties:
@@ -794,7 +794,7 @@ Resources:
       Roles:
         - Ref: startuptoolbagpipelineprojectPipelineReactBuildCodePipelineActionRole7310E8B7
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Pipeline/ReactBuild/ReactBuild/CodePipelineActionRole/DefaultPolicy/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Pipeline/ReactBuild/ReactBuild/CodePipelineActionRole/DefaultPolicy/Resource
   startuptoolbagpipelineprojectPipelineReactDeployReactS3PushCodePipelineActionRole72339A4F:
     Type: AWS::IAM::Role
     Properties:
@@ -811,7 +811,7 @@ Resources:
                     - :iam::390589559702:root
         Version: "2012-10-17"
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Pipeline/ReactDeploy/ReactS3Push/CodePipelineActionRole/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Pipeline/ReactDeploy/ReactS3Push/CodePipelineActionRole/Resource
   startuptoolbagpipelineprojectPipelineReactDeployReactS3PushCodePipelineActionRoleDefaultPolicy740FDBB9:
     Type: AWS::IAM::Policy
     Properties:
@@ -860,7 +860,7 @@ Resources:
       Roles:
         - Ref: startuptoolbagpipelineprojectPipelineReactDeployReactS3PushCodePipelineActionRole72339A4F
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Pipeline/ReactDeploy/ReactS3Push/CodePipelineActionRole/DefaultPolicy/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Pipeline/ReactDeploy/ReactS3Push/CodePipelineActionRole/DefaultPolicy/Resource
   startuptoolbagpipelineprojectUpdatePipelineSelfMutationRoleDDD53B55:
     Type: AWS::IAM::Role
     Properties:
@@ -872,7 +872,7 @@ Resources:
               Service: codebuild.amazonaws.com
         Version: "2012-10-17"
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/UpdatePipeline/SelfMutation/Role/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/UpdatePipeline/SelfMutation/Role/Resource
   startuptoolbagpipelineprojectUpdatePipelineSelfMutationRoleDefaultPolicy6F2B190D:
     Type: AWS::IAM::Policy
     Properties:
@@ -961,7 +961,7 @@ Resources:
       Roles:
         - Ref: startuptoolbagpipelineprojectUpdatePipelineSelfMutationRoleDDD53B55
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/UpdatePipeline/SelfMutation/Role/DefaultPolicy/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/UpdatePipeline/SelfMutation/Role/DefaultPolicy/Resource
   startuptoolbagpipelineprojectUpdatePipelineSelfMutationC201FB5A:
     Type: AWS::CodeBuild::Project
     Properties:
@@ -998,7 +998,7 @@ Resources:
           - startuptoolbagpipelineprojectPipelineArtifactsBucketEncryptionKeyCA31894C
           - Arn
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/UpdatePipeline/SelfMutation/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/UpdatePipeline/SelfMutation/Resource
   startuptoolbagpipelineprojectAssetsDockerRole2C894415:
     Type: AWS::IAM::Role
     Properties:
@@ -1016,7 +1016,7 @@ Resources:
                     - :iam::390589559702:root
         Version: "2012-10-17"
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Assets/DockerRole/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Assets/DockerRole/Resource
   startuptoolbagpipelineprojectAssetsDockerRoleDefaultPolicy813BEA05:
     Type: AWS::IAM::Policy
     Properties:
@@ -1083,7 +1083,7 @@ Resources:
       Roles:
         - Ref: startuptoolbagpipelineprojectAssetsDockerRole2C894415
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Assets/DockerRole/DefaultPolicy/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Assets/DockerRole/DefaultPolicy/Resource
   startuptoolbagpipelineprojectAssetsDockerAsset14A192C0A:
     Type: AWS::CodeBuild::Project
     Properties:
@@ -1120,7 +1120,7 @@ Resources:
           - startuptoolbagpipelineprojectPipelineArtifactsBucketEncryptionKeyCA31894C
           - Arn
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Assets/DockerAsset1/Default/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Assets/DockerAsset1/Default/Resource
   startuptoolbagpipelineprojectAssetsDockerAsset2989389D9:
     Type: AWS::CodeBuild::Project
     Properties:
@@ -1157,7 +1157,7 @@ Resources:
           - startuptoolbagpipelineprojectPipelineArtifactsBucketEncryptionKeyCA31894C
           - Arn
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Assets/DockerAsset2/Default/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Assets/DockerAsset2/Default/Resource
   startuptoolbagpipelineprojectAssetsDockerAsset323478376:
     Type: AWS::CodeBuild::Project
     Properties:
@@ -1194,7 +1194,7 @@ Resources:
           - startuptoolbagpipelineprojectPipelineArtifactsBucketEncryptionKeyCA31894C
           - Arn
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Assets/DockerAsset3/Default/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Assets/DockerAsset3/Default/Resource
   startuptoolbagpipelineprojectAssetsDockerAsset4CA3402BC:
     Type: AWS::CodeBuild::Project
     Properties:
@@ -1231,7 +1231,7 @@ Resources:
           - startuptoolbagpipelineprojectPipelineArtifactsBucketEncryptionKeyCA31894C
           - Arn
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Assets/DockerAsset4/Default/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Assets/DockerAsset4/Default/Resource
   startuptoolbagpipelineprojectAssetsDockerAsset549FAA147:
     Type: AWS::CodeBuild::Project
     Properties:
@@ -1268,7 +1268,7 @@ Resources:
           - startuptoolbagpipelineprojectPipelineArtifactsBucketEncryptionKeyCA31894C
           - Arn
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-pipeline-project/Assets/DockerAsset5/Default/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-pipeline-project/Assets/DockerAsset5/Default/Resource
   WWW2Bucket519E4FC4:
     Type: AWS::S3::Bucket
     Properties:
@@ -1278,7 +1278,7 @@ Resources:
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
     Metadata:
-      aws:cdk:path: startuptoolbag-app/WWW2_Bucket_/Resource
+      aws:cdk:path: awsboilerplate-app/WWW2_Bucket_/Resource
   WWW2BucketPolicy5CD713E7:
     Type: AWS::S3::BucketPolicy
     Properties:
@@ -1298,7 +1298,7 @@ Resources:
                   - /*
         Version: "2012-10-17"
     Metadata:
-      aws:cdk:path: startuptoolbag-app/WWW2_Bucket_/Policy/Resource
+      aws:cdk:path: awsboilerplate-app/WWW2_Bucket_/Policy/Resource
   startuptoolbagCDKCodebuildRoleB39B462E:
     Type: AWS::IAM::Role
     Properties:
@@ -1310,7 +1310,7 @@ Resources:
               Service: codebuild.amazonaws.com
         Version: "2012-10-17"
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-CDKCodebuild/Role/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-CDKCodebuild/Role/Resource
   startuptoolbagCDKCodebuildRoleDefaultPolicy9BE44CDA:
     Type: AWS::IAM::Policy
     Properties:
@@ -1394,7 +1394,7 @@ Resources:
       Roles:
         - Ref: startuptoolbagCDKCodebuildRoleB39B462E
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-CDKCodebuild/Role/DefaultPolicy/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-CDKCodebuild/Role/DefaultPolicy/Resource
   startuptoolbagCDKCodebuild3B84D27B:
     Type: AWS::CodeBuild::Project
     Properties:
@@ -1418,16 +1418,16 @@ Resources:
         Fn::GetAtt:
           - startuptoolbagpipelineprojectPipelineArtifactsBucketEncryptionKeyCA31894C
           - Arn
-      Name: startuptoolbag-CodebuildProject
+      Name: awsboilerplate-CodebuildProject
       TimeoutInMinutes: 60
     Metadata:
-      aws:cdk:path: startuptoolbag-app/startuptoolbag-CDKCodebuild/Resource
+      aws:cdk:path: awsboilerplate-app/awsboilerplate-CDKCodebuild/Resource
   CDKMetadata:
     Type: AWS::CDK::Metadata
     Properties:
       Modules: aws-cdk=1.95.1,@aws-cdk/assets=1.92.0,@aws-cdk/aws-apigateway=1.92.0,@aws-cdk/aws-apigatewayv2=1.92.0,@aws-cdk/aws-applicationautoscaling=1.92.0,@aws-cdk/aws-autoscaling=1.92.0,@aws-cdk/aws-autoscaling-common=1.92.0,@aws-cdk/aws-autoscaling-hooktargets=1.92.0,@aws-cdk/aws-batch=1.92.0,@aws-cdk/aws-certificatemanager=1.92.0,@aws-cdk/aws-cloudformation=1.92.0,@aws-cdk/aws-cloudfront=1.92.0,@aws-cdk/aws-cloudwatch=1.92.0,@aws-cdk/aws-codebuild=1.92.0,@aws-cdk/aws-codecommit=1.92.0,@aws-cdk/aws-codedeploy=1.92.0,@aws-cdk/aws-codeguruprofiler=1.92.0,@aws-cdk/aws-codepipeline=1.92.0,@aws-cdk/aws-codepipeline-actions=1.92.0,@aws-cdk/aws-cognito=1.92.0,@aws-cdk/aws-dynamodb=1.92.0,@aws-cdk/aws-ec2=1.92.0,@aws-cdk/aws-ecr=1.92.0,@aws-cdk/aws-ecr-assets=1.92.0,@aws-cdk/aws-ecs=1.92.0,@aws-cdk/aws-efs=1.92.0,@aws-cdk/aws-elasticache=1.92.0,@aws-cdk/aws-elasticloadbalancing=1.92.0,@aws-cdk/aws-elasticloadbalancingv2=1.92.0,@aws-cdk/aws-events=1.92.0,@aws-cdk/aws-events-targets=1.92.0,@aws-cdk/aws-globalaccelerator=1.92.0,@aws-cdk/aws-iam=1.92.0,@aws-cdk/aws-kinesis=1.92.0,@aws-cdk/aws-kinesisfirehose=1.92.0,@aws-cdk/aws-kms=1.92.0,@aws-cdk/aws-lambda=1.92.0,@aws-cdk/aws-lambda-event-sources=1.92.0,@aws-cdk/aws-logs=1.92.0,@aws-cdk/aws-route53=1.92.0,@aws-cdk/aws-route53-patterns=1.92.0,@aws-cdk/aws-route53-targets=1.92.0,@aws-cdk/aws-s3=1.92.0,@aws-cdk/aws-s3-assets=1.92.0,@aws-cdk/aws-s3-notifications=1.92.0,@aws-cdk/aws-sam=1.92.0,@aws-cdk/aws-secretsmanager=1.92.0,@aws-cdk/aws-servicecatalog=1.92.0,@aws-cdk/aws-servicediscovery=1.92.0,@aws-cdk/aws-signer=1.92.0,@aws-cdk/aws-sns=1.92.0,@aws-cdk/aws-sns-subscriptions=1.92.0,@aws-cdk/aws-sqs=1.92.0,@aws-cdk/aws-ssm=1.92.0,@aws-cdk/aws-stepfunctions=1.92.0,@aws-cdk/cloud-assembly-schema=1.92.0,@aws-cdk/core=1.92.0,@aws-cdk/custom-resources=1.92.0,@aws-cdk/cx-api=1.92.0,@aws-cdk/pipelines=1.92.0,@aws-cdk/region-info=1.92.0,jsii-runtime=Python/3.8.0
     Metadata:
-      aws:cdk:path: startuptoolbag-app/CDKMetadata/Default
+      aws:cdk:path: awsboilerplate-app/CDKMetadata/Default
 Outputs:
   WWWSITEBUCKETNAME:
     Value:

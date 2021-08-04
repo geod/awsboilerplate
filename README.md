@@ -1,41 +1,49 @@
-# Startup Toolbag
+<img src="https://raw.githubusercontent.com/geod/awsboilerplate/master/startuptoolbag/www/react-frontend/app/components/Header/banner.jpg" alt="awsboilerplate" align="center" />
+
+<br />
 
 ## What is it?
 
-A complete boilerplate to get your idea live in minutes with a web front end, back end services, infrastructure, monitoring and CICD pipeline.
+Get live in minutes on aws with a react front end, back end lambdas, cloudfront and cicd pipeline.
 
 ## Motivation
 
-Getting a new project is time consuming: Setting up the front end web stack, back end services, 
-cloud infrastructure (Certificates, DNS, API Gateways, etc), CICD pipeline (beta, prod or blue/green) and monitoring. 
-Putting **everything** together can be hours or days of configuration and integration. Terraform is unsatisfying for most
-developers and the console is not integrated into the development lifecycle.
+When you have a new project or idea - you want to focus on the idea not configuration. The
+ [serverless web application](https://aws.amazon.com/lambda/resources/refarch/refarch-webapp/) is a very popular pattern
+  for building dynamic sites/applications. However, there remains **a lot** of setup to get this fully running: 
+  cloudfront, s3 buckets, route53, certificates, API gateways, lambdas, 
+code build and assembling a react/redux web stack and integrating it with codebuild, CICD, etc.  
  
-The startup boilerplate aims to provide a full lambda web architecture and development experience to get you running in minutes. 
-It currently includes:
-1. Front end web stack (leveraging the react boilerplate project)
-2. Serverless back end (request handling lambdas, background workers)
-3. Infrastructure (certificates, route53, cloudfront, API Gateways
+Awsboilerplate provides a serverless web architecture **and** development experience that is deployable in a few commands.
+It includes:
+1. Front end react/redux stack (leveraging the react boilerplate project built via codebuild)
+2. Lambda back end (including exemplars for common lambda patterns)
+3. Infrastructure (certificates, route53, cloudfront, API Gateways)
 4. Monitoring (via cloudwatch)
-5. CICD pipeline (deployment pipeline including beta, prod and self-mutation detailed below)
+5. CICD pipeline (full CICD codepipeline and codebuild including self-mutation detailed below)
 
-The novelty of the project is **all of the above elements** are implemented **in code**, in a **single mono repository**.
-The project leverages CDK and some experimental features of CDK (CDKPipelines). Committing code changes to any element 
-triggers the CICD pipeline which mutates the environment. 
-We are calling this pattern 'Everything is Code' which is described in more detail below.
+In addition to the above the project has two novel features:
+
+Firstly, the project is fully implemented in [CDK](https://aws.amazon.com/cdk/). CDK is more developer friendly than CloudFormation or Terraform. 
+The initial architecture is likely a good jumping off point for many developers. However, if you want to customize you have full access to change anything. It is an opinionated starter but open to adaptation.
+
+The second feature is **every element** (front end, back end, cicd, infrastructure, monitoring) is implemented **in code**, in a **single mono repository**. 
+It is possible to commit changes to any element and the pipeline will auto-magically mutate (this includes changes to the pipeline itself). This is made possible
+by leverage one of the latest features in CDK called [CDKPipelines](https://aws.amazon.com/blogs/developer/cdk-pipelines-continuous-delivery-for-aws-cdk-applications/).
+We are calling the pattern built ontop of CDK and CDKPipelines 'Everything is Code' which is described in more detail below.
 
 ### Architecture Overview
 The project implements a lambda reference architecture for web applications with CICD pipeline, building react front 
 end for distribution via CloudFront over S3. An API Gateway fronts lambdas serving from S3 and a background worker.
 
-![Overview](documentation/AWS-Boilerplate-Architecture.jpg?raw=true "The Startup Toolbag")
+![Overview](documentation/AWS-Boilerplate-Architecture.jpg?raw=true "awsboilerplate")
 
 ### CICD Pipeline Process
 A custom CICD pipeline combines CodePipline, Codebuild and [CDK Pipeline](https://aws.amazon.com/blogs/developer/cdk-pipelines-continuous-delivery-for-aws-cdk-applications/). 
 
-![TUB CICD](documentation/AWS-Boilerplate-Pipeline.jpg?raw=true "The Startup Toolbag CICD")
+![TUB CICD](documentation/AWS-Boilerplate-Pipeline.jpg?raw=true "awsboilerplate CICD")
 
-The pipeline supports changing all three of the below use-cases:
+The pipeline supports the following use-cases:
 * Changing application code (changing the code behind a lambda) => Pipeline will deploy the new code
 * Changing infrastructure (adding/delete constructs - S3/API Gw/Lamba/Certificates) => The CDK stage of the pipeline diffs the current vs requested state and automatically generates and executes the cloud formation changeset
 ![TUB CICD](documentation/AWS-Boilerplate-Infrastructure-Mutate.jpg?raw=true "Infrastructure Mutate")
@@ -44,8 +52,9 @@ The pipeline supports changing all three of the below use-cases:
 
 ### Everything Is Code
 
-Over the last decade infrastructure was moved into code. However, it is still partial in terms of covering all elements 
-of the environment, change management and developer independence.
+Every developer is likely familiar with the term 'Infrastructure as Code'. Over the last decade infrastructure has moved
+from manual configuration to being implemented as code. However, it is still partial and does not cover all aspects of
+a project or the developer experience ...
 
 |**Infrastructure as Code** | 
 |---|
@@ -76,34 +85,9 @@ The end state of this direction of travel is **everything is code**: all the ele
 
 ## Quick Start 
 
-The below gets you running without registering a domain name
-1. Install the [AWS CDK](https://docs.aws.amazon.com/cdk/latest/guide/cli.html)
-2. Fork THEN clone this project (you have to fork vs clone as AWS will shortly attempt to pull and build it from github)
-3. Create a python venv
-```
-virtualenv -p python3.8 .venv
-pip install -r requirements.txt
-```
-4. Run `cdk bootstrap --trust <AWS ACCOUNT ID> --cloudformation-execution-policies arn:aws:iam::aws:policy/AdministratorAccess` (this command sets up cdk on your account)
-5. Optionally run `cdk synth` to test the tools are installed correctly
-6. Log into github and create an access token to allow codepipeline to pull from the repository
-7. Add this access token to AWS secrets manager using the following command
-```
-aws secretsmanager create-secret --name startuptoolbag-github-oath-token \
-    --description "Start Up Toolkbag Git Auth Token" \
-    --secret-string <YOUR OATH TOKEN>
-```
-8. Run `cdk deploy`. Note - setup is the *only* time you need to run cdk deploy to bootstrap the pipeline. 
-On any future commits the pipeline will run and update the pipeline and infrastructure.
-9. Log into codepipeline in your account and you will see a pipeline for the project. It should already be running
-and will be building and deploying the infrastructure and code
-10. Once the pipeline is complete you will be able to access the react front end
-
-### Adding a domain name
-You can also add a custom domain name for the project. The startuptoolbag supports all of the certificates,
-cloud front distributions
+### Register a domain name
 1. Register a domain via Route53. It will automatically create a hosted zone
-2. Run `aws route53 list-hosted-zones`. Take the hosted zone ID and domain name and enter them in `startuptoolbag_config.py`
+2. Run `aws route53 list-hosted-zones`. Take the hosted zone ID and domain name and enter them in `awsboilerplate_config.py`
 ```
 hosted_zone_name = "<your domain name i.e. example.com>"
 website_domain_name = "<Your Hosted Zone ID>"
@@ -111,15 +95,39 @@ website_domain_name = "<Your Hosted Zone ID>"
 3. Commit and push to your github fork. This will trigger the codepipeline build
 4. Once the pipeline is complete you will be fully live
 
+### Deploy awsboilerplate
+1. Install the [AWS CDK](https://docs.aws.amazon.com/cdk/latest/guide/cli.html)
+2. Fork THEN clone this project (you need to fork as AWS will pull the code from github)
+3. Create a python venv
+```
+virtualenv -p python3.8 .venv
+pip install -r requirements.txt
+```
+4. Run `cdk bootstrap --trust <AWS ACCOUNT ID> --cloudformation-execution-policies arn:aws:iam::aws:policy/AdministratorAccess` (this command sets up cdk on your account)
+5. Run `cdk synth` to test the tools are installed correctly
+6. Log into github and create an access token to allow codepipeline to pull from the repository
+7. Add this access token to AWS secrets manager using the following command
+```
+aws secretsmanager create-secret --name awsboilerplate-github-oath-token \
+    --description "awsboilerplate Git Auth Token" \
+    --secret-string <YOUR OATH TOKEN>
+```
+8. Run `cdk deploy`. Note - setup is the *only* time you need to run cdk deploy to bootstrap the pipeline. 
+On any future commits the pipeline will run and update the pipeline and infrastructure.
+9. View codepipeline within the console. It should already be running
+and will be building and deploying the infrastructure and code
+10. Once the pipeline is complete you will be able to access the react from end using the domain address!
+
 ## Acknowledgements
 
 In many ways the novelty of the project is to assemble and integrate multiple components into a full architecture/toolkit.
 
 Acknowledgements
 1. [react-boilerplate](https://github.com/react-boilerplate/react-boilerplate)
+2. @rix0rrr provided invaluable help to answer a number of CDK questions
 
 Other Reading
-1. I found this too late into building startup-toolbag [CDK Patterns](https://cdkpatterns.com/)
+1. I found this too late into building awsboilerplate [CDK Patterns](https://cdkpatterns.com/)
 2. Which is different from the official [AWS pattern library](https://github.com/aws-samples/aws-cdk-examples)
 
 ## Contributing

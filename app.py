@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 
 from aws_cdk import core
-from startuptoolbag.pipeline.cdk_pipeline_stack import CDKPipelineStack
-import startuptoolbag_config
+from awsboilerplate.pipeline.cdk_pipeline_stack import CDKPipelineStack
+import awsboilerplate_config
 
 app = core.App()
 
-pipeline_stack = CDKPipelineStack(app, "startuptoolbag-app", env={
-  'account': startuptoolbag_config.account,
-  'region': startuptoolbag_config.region,
+pipeline_stack = CDKPipelineStack(app, "awsboilerplate-app", env={
+  'account': awsboilerplate_config.account,
+  'region': awsboilerplate_config.region,
 })
 
 
