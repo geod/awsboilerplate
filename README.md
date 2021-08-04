@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/geod/awsboilerplate/master/startuptoolbag/www/react-frontend/app/components/Header/banner.jpg" alt="awsboilerplate" align="center" />
+<img src="https://raw.githubusercontent.com/geod/awsboilerplate/master/awsboilerplate/www/react-frontend/app/components/Header/banner.jpg" alt="awsboilerplate" align="center" />
 
 <br />
 
