@@ -6,7 +6,7 @@ import awsboilerplate_config
 
 app = core.App()
 
-pipeline_stack = CDKPipelineStack(app, "awsboilerplate-app", env={
+pipeline_stack = CDKPipelineStack(app, "awsboilerplate", env={
   'account': awsboilerplate_config.account,
   'region': awsboilerplate_config.region,
 })
