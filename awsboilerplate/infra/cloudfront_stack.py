@@ -58,12 +58,6 @@ class FlexibleCloudFrontStack(core.Stack):
             removal_policy=core.RemovalPolicy.DESTROY
         )
 
-        s3deploy.BucketDeployment(self, "DeployWebsite",
-            sources=[s3deploy.Source.asset(os.path.abspath("awsboilerplate/www/react-frontend/build"))],
-            # sources=[s3deploy.Source.bucket(s3.Bucket.from_bucket_name(self, "MyB", react_artifact.bucket_name), react_artifact.object_key)],
-            destination_bucket=self.www_site_bucket,
-            distribution=self.www_site_bucket)
-
         # CloudFront distribution that provides HTTPS - for www
         www_alias_configuration = cloudfront.AliasConfiguration(
             acm_cert_ref=tls_cert.certificate_arn,
@@ -85,6 +79,11 @@ class FlexibleCloudFrontStack(core.Stack):
             alias_configuration=www_alias_configuration, #This as added
             origin_configs=[www_source_configuration]
         )
+
+        s3deploy.BucketDeployment(self, "DeployWebsite",
+            sources=[s3deploy.Source.asset(os.path.abspath("awsboilerplate/www/react-frontend/build"))],
+            destination_bucket=self.www_site_bucket,
+            distribution=www_distribution)
 
         route53.ARecord(
             self,
