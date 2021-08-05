@@ -1,7 +1,8 @@
 from aws_cdk import (core, aws_codebuild as codebuild,
                      aws_codepipeline_actions as codepipeline_actions,
                      aws_codepipeline as code_pipeline,
-                     aws_iam)
+                     aws_iam,
+                     aws_s3)
 from aws_cdk.pipelines import CdkPipeline, SimpleSynthAction
 from awsboilerplate.infra.lambda_webapp_cdk_stage import LambdaWebArchitectureCDKStage
 import awsboilerplate_config
@@ -36,7 +37,8 @@ class CDKPipelineStack(core.Stack):
         Rather than following the standard examples and creating a CDK Pipeline from the outset we need to create a standard
         code pipeline and add the CDK features onto that pipeline
         """
-        self.code_pipeline = code_pipeline.Pipeline(self, "codepipeline-project",
+
+        self.code_pipeline = code_pipeline.Pipeline(self, f"{construct_id}-codepipeline-project",
                                                     restart_execution_on_update=True,
                                                     stages=[code_pipeline.StageProps(stage_name="Source",
                                                                                      actions=[source_action])])
@@ -48,7 +50,7 @@ class CDKPipelineStack(core.Stack):
             We are going to pull these artifacts from this path and deploy to S3 within the CDK stage later in the pipeline
             (this is why the application artifact builds need to run before the CDK stages)
         """
-        post_react_build_artifact = self.add_react_build(self.code_pipeline, self.source_output)
+        post_react_build_artifact = self.add_react_build(construct_id, self.code_pipeline, self.source_output)
 
         application_code = code_pipeline.Artifact('application_code')
         cloud_assembly_artifact = code_pipeline.Artifact('cloudformation_output')
@@ -65,7 +67,7 @@ class CDKPipelineStack(core.Stack):
         Adds CDK stages to the existing pipeline
         CDK pipelines stages added include 1) self-mutate on changes to this file 2) allows deployment of CDK constructs
         """
-        self.cdk_pipeline = CdkPipeline(self, "awsboilerplate-cdk-pipeline-project",
+        self.cdk_pipeline = CdkPipeline(self, f"{construct_id}-cdk-pipeline",
                                         cloud_assembly_artifact=cloud_assembly_artifact,
                                         code_pipeline=self.code_pipeline,
                                         synth_action=synth_action,
@@ -79,12 +81,12 @@ class CDKPipelineStack(core.Stack):
         Application stages in CDK are misleadingly named. They are meant to be self-contained environments (beta, prod)
         The stage deploys the full set of constructs (API GW, CloudFront, Lambdas, Dynamo, etc)
         """
-        prod_app_stage = LambdaWebArchitectureCDKStage(self, "awsboilerplate-prod", env=env,
+        prod_app_stage = LambdaWebArchitectureCDKStage(self, f"{construct_id}-prod", env=env,
                                                        domain_name=awsboilerplate_config.website_domain_name,
                                                        hosted_zone_id=awsboilerplate_config.hosted_zone_id)
         prod_stage = self.cdk_pipeline.add_application_stage(prod_app_stage)
 
-    def add_react_build(self, c_pipeline: code_pipeline.Pipeline, application_code: code_pipeline.Artifact):
+    def add_react_build(self, parent_construct_id, c_pipeline: code_pipeline.Pipeline, application_code: code_pipeline.Artifact):
         #
         # codebuild_role = aws_iam.Role(self, 'CodebuildServiceRole',
         #                               assumed_by=aws_iam.ServicePrincipal("codebuild.amazonaws.com"))
@@ -95,13 +97,12 @@ class CDKPipelineStack(core.Stack):
         # https://docs.aws.amazon.com/codebuild/latest/userguide/setting-up.html
         codebuild_project = codebuild.PipelineProject(
             self,
-            "awsboilerplate-CDKCodebuild",
-            project_name="awsboilerplate-CodebuildProject",
+            f"{parent_construct_id}-react-codebuild",
+            project_name=f"{parent_construct_id}-react-codebuild",
             build_spec=codebuild.BuildSpec.from_source_filename(filename='buildspec.yml'),
             environment=codebuild.BuildEnvironment(privileged=True),
             description='React Build',
-            timeout=core.Duration.minutes(15),
-            # role=codebuild_role
+            timeout=core.Duration.minutes(15)
         )
 
         build_action = codepipeline_actions.CodeBuildAction(action_name="ReactBuild",
