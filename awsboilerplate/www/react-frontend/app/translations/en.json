@@ -20,7 +20,7 @@
   "boilerplate.containers.FeaturePage.scaffolding.message": "Automate the creation of components, containers, routes, selectors\n  and sagas - and their tests - right from the CLI!",
   "boilerplate.containers.FeaturePage.state_management.header": "Predictable state management",
   "boilerplate.containers.FeaturePage.state_management.message": "Unidirectional data flow allows for change logging and time travel\n    debugging.",
-  "boilerplate.containers.HomePage.start_project.header": "awsboilerplate.io Live Demo!",
+  "boilerplate.containers.HomePage.start_project.header": "awsboilerplate.io Live Demo!!",
   "boilerplate.containers.HomePage.start_project.message": "This site is fully build and deployed by the project. This react front leverages various back end services",
   "boilerplate.containers.HomePage.tryme.atPrefix": "@",
   "boilerplate.containers.HomePage.tryme.header": "Try me!",

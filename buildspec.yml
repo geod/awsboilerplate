@@ -6,7 +6,7 @@ phases:
       - cd awsboilerplate/www/react-frontend
       - echo Running NPM Install!!
       - pwd
-      - npm install
+      - npm install --quiet --no-progress
   build:
     commands:
       - echo Running npm build!!
