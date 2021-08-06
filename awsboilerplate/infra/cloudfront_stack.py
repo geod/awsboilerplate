@@ -14,6 +14,8 @@ from aws_cdk import (
 )
 import os
 
+from aws_cdk.aws_s3_deployment import CacheControl
+
 
 class FlexibleCloudFrontStack(core.Stack):
 
@@ -83,7 +85,8 @@ class FlexibleCloudFrontStack(core.Stack):
         s3deploy.BucketDeployment(self, "DeployWebsite",
             sources=[s3deploy.Source.asset(os.path.abspath("awsboilerplate/www/react-frontend/build"))],
             destination_bucket=self.www_site_bucket,
-            distribution=www_distribution)
+            distribution=www_distribution,
+            cache_control=[CacheControl.from_string("max-age=0,no-cache,no-store,must-revalidate")])
 
         route53.ARecord(
             self,
