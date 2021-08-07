@@ -3,6 +3,7 @@ from aws_cdk import (core, aws_codebuild as codebuild,
                      aws_codepipeline as code_pipeline,
                      aws_iam,
                      aws_s3)
+from aws_cdk.aws_codebuild import Cache
 from aws_cdk.pipelines import CdkPipeline, SimpleSynthAction
 from awsboilerplate.infra.lambda_webapp_cdk_stage import LambdaWebArchitectureCDKStage
 import awsboilerplate_config
@@ -44,11 +45,11 @@ class CDKPipelineStack(core.Stack):
                                                                                      actions=[source_action])])
 
         """
-            To add application builds we add a codebuild project to the pipeline. The one twist is that the project
-            leaves build artifacts on the local filesystem of codepipeline. 
+        To add application builds we add a codebuild project to the pipeline. The one twist is that the project
+        leaves build artifacts on the local filesystem of codepipeline. 
 
-            We are going to pull these artifacts from this path and deploy to S3 within the CDK stage later in the pipeline
-            (this is why the application artifact builds need to run before the CDK stages)
+        We are going to pull these artifacts from this path and deploy to S3 within the CDK stage later in the pipeline
+        (this is why the application artifact builds need to run before the CDK stages)
         """
         post_react_build_artifact = self.add_react_build(construct_id, self.code_pipeline, self.source_output)
 
@@ -59,7 +60,7 @@ class CDKPipelineStack(core.Stack):
             source_artifact=post_react_build_artifact,
             cloud_assembly_artifact=cloud_assembly_artifact,
             install_command='npm install -g aws-cdk && pip install -r requirements.txt',
-            synth_command='find . && cd $CODEBUILD_SRC_DIR && cdk synth',
+            synth_command='cd $CODEBUILD_SRC_DIR && cdk synth',
             additional_artifacts=[{'artifact': application_code, 'directory': './'}])
 
 
@@ -87,12 +88,7 @@ class CDKPipelineStack(core.Stack):
         prod_stage = self.cdk_pipeline.add_application_stage(prod_app_stage)
 
     def add_react_build(self, parent_construct_id, c_pipeline: code_pipeline.Pipeline, application_code: code_pipeline.Artifact):
-        #
-        # codebuild_role = aws_iam.Role(self, 'CodebuildServiceRole',
-        #                               assumed_by=aws_iam.ServicePrincipal("codebuild.amazonaws.com"))
-        # codebuild_role.add_to_policy(
-        #     aws_iam.PolicyStatement(resources=["*"], actions=['s3:GetObject', 's3:PutObject']));
-
+        cache_bucket = aws_s3.Bucket(self, "ReactCodeBuildCache")
         build_output_artifact = code_pipeline.Artifact()
         # https://docs.aws.amazon.com/codebuild/latest/userguide/setting-up.html
         codebuild_project = codebuild.PipelineProject(
@@ -102,6 +98,7 @@ class CDKPipelineStack(core.Stack):
             build_spec=codebuild.BuildSpec.from_source_filename(filename='buildspec.yml'),
             environment=codebuild.BuildEnvironment(privileged=True),
             description='React Build',
+            cache=Cache.bucket(cache_bucket),
             timeout=core.Duration.minutes(15)
         )
 
