@@ -97,7 +97,8 @@ export function mapDispatchToProps(dispatch) {
   return {
     onSubmitBackgroundJob: evt => {
       if (evt !== undefined && evt.preventDefault) evt.preventDefault();
-      dispatch(submitBackgroundJob(evt.target.value))
+        debugger;
+        dispatch(submitBackgroundJob(evt.target.value))
     },
     onPollCompletedJobs: evt => dispatch(pollCompletedJobs())
   };

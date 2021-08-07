@@ -6,30 +6,19 @@ import {backgroundJobAccepted, backgroundJobRejected, backgroundJobStatusResult}
  * Submit a background job
  */
 
- function extractRootDomain(url) {
-    var domain = extractHostname(url),
-        splitArr = domain.split('.'),
-        arrLen = splitArr.length;
-
-    //extracting the root domain here
-    //if there is a subdomain
-    if (arrLen > 2) {
-        domain = splitArr[arrLen - 2] + '.' + splitArr[arrLen - 1];
-        //check to see if it's using a Country Code Top Level Domain (ccTLD) (i.e. ".me.uk")
-        if (splitArr[arrLen - 2].length == 2 && splitArr[arrLen - 1].length == 2) {
-            //this is using a ccTLD
-            domain = splitArr[arrLen - 3] + '.' + domain;
-        }
-    }
-    return domain;
-}
+const rootDomain = s => {
+    const r =  /.*\.([^.]*[^0-9][^.]*\.[^.]*[^.0-9][^.]*$)/;
+    return s.replace(r, '$1');
+};
 
 export function* submitBackgroundJob(action) {
   try {
     //https://api.awsboilerplate.io/prod/job
     // Call our request helper (see 'utils/request')
-    url = `https://api.${extractRootDomain(window.location.hostname)}`
-    const job_accept = yield fetch("${url}/prod/job", {method: "POST", body: JSON.stringify({'number': action.number})})
+    debugger;
+    const root_domain = rootDomain(window.location.hostname);
+    var the_url = `https://api.${root_domain}`;
+    const job_accept = yield fetch("${the_url}/prod/job", {method: "POST", body: JSON.stringify({'number': action.number})})
     const job_response = JSON.parse(job_accept._bodyText);
     yield put(backgroundJobAccepted(job_response["href"], job_response["id"]));
   } catch (err) {
