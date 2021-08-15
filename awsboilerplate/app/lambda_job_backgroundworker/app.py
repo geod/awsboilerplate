@@ -4,6 +4,7 @@ import os
 import uuid
 import boto3
 import decimal
+import sympy
 
 
 # Converts DynamoDB items to JSON

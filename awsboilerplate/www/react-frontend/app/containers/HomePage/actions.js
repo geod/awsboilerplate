@@ -36,11 +36,12 @@ export function submitBackgroundJob(number) {
   };
 }
 
-export function backgroundJobAccepted(href, id) {
+export function backgroundJobAccepted(id, href, number) {
   return {
     type: BACKGROUND_JOB_ACCEPTED,
-    href: href,
     id: id,
+    href: href,
+    number: number
   };
 }
 

@@ -26,6 +26,8 @@ import { useInjectSaga } from 'utils/injectSaga';
 import H2 from 'components/H2';
 import reducer from './reducer';
 import saga from './saga';
+import JobAcceptTable from './JobAcceptTable';
+import JobResultTable from './JobResultTable';
 
 const key = 'home';
 
@@ -58,22 +60,20 @@ export function HomePage({
         </CenteredSection>
         <Section>
           <Form onSubmit={onSubmitBackgroundJob}>
-          Launch a background task (check if the number is prime):
+          Launch background job (is number prime?):
             <Input
                 id="numberprime"
                 type="number"
               />
           </Form>
         </Section>
-        <Section>
-          Accepted Jobs
-          {jobs.map(job => { return (<div key={job.id}>{job.href}</div>)})}
-        </Section>
+        <JobAcceptTable tableData={jobs}/>
         <Section>
           Last 10 Jobs (Global)
           <button onClick={onPollCompletedJobs}>Refresh</button>
-          {job_results.map(job_result => { return (<div key={job_result.id}>{JSON.stringify(job_result.id) }</div>)})}
         </Section>
+        <JobResultTable tableData={job_results}/>
+        <br></br>
       </div>
     </article>
   );
@@ -97,7 +97,6 @@ export function mapDispatchToProps(dispatch) {
   return {
     onSubmitBackgroundJob: evt => {
       if (evt !== undefined && evt.preventDefault) evt.preventDefault();
-        debugger;
         dispatch(submitBackgroundJob(evt.target.value))
     },
     onPollCompletedJobs: evt => dispatch(pollCompletedJobs())

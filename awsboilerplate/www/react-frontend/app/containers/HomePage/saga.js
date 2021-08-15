@@ -13,14 +13,11 @@ const rootDomain = s => {
 
 export function* submitBackgroundJob(action) {
   try {
-    //https://api.awsboilerplate.io/prod/job
-    // Call our request helper (see 'utils/request')
-    debugger;
     const root_domain = rootDomain(window.location.hostname);
-    var the_url = `https://api.${root_domain}`;
-    const job_accept = yield fetch("${the_url}/prod/job", {method: "POST", body: JSON.stringify({'number': action.number})})
+    const full_path = "https://api." + root_domain + "/prod/job"
+    const job_accept = yield fetch(full_path, {method: "POST", body: JSON.stringify({'number': action.number})})
     const job_response = JSON.parse(job_accept._bodyText);
-    yield put(backgroundJobAccepted(job_response["href"], job_response["id"]));
+    yield put(backgroundJobAccepted(job_response["id"], job_response["href"], action.number));
   } catch (err) {
     yield put(backgroundJobRejected(err));
   }
@@ -31,8 +28,9 @@ export function* submitBackgroundJob(action) {
  */
 export function* getBackgroundJobStatus(action) {
   try {
-    // Call our request helper (see 'utils/request')
-    const job_status_request = yield fetch("/api/job")
+    const root_domain = rootDomain(window.location.hostname);
+    const full_path = "https://api." + root_domain + "/prod/job"
+    const job_status_request = yield fetch(full_path)
     const job_status = JSON.parse(job_status_request._bodyText);
     yield put(backgroundJobStatusResult(job_status));
   } catch (err) {

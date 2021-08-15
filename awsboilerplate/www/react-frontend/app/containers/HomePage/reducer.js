@@ -17,8 +17,8 @@ import {
 
 // The initial state of the App
 export const initialState = {
-  jobs: [],
-  jobs_result: []
+  accepted_jobs: [],
+  finished_jobs: []
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -28,11 +28,12 @@ const homeReducer = (state = initialState, action) =>
       case SUBMIT_BACKGROUND_JOB:
         break;
       case BACKGROUND_JOB_ACCEPTED:
-        draft.jobs.push({"id": action.id, "href": action.href});
+        draft.accepted_jobs.push({"id": action.id, "href": action.href});
         break;
       case BACKGROUND_JOB_RESULT:
-        draft.jobs_result.splice(0, draft.jobs_result.length)
-        draft.jobs_result = [...draft.jobs_result, ...action.jobs_result]
+        debugger;
+        draft.finished_jobs = [];
+        draft.finished_jobs.push(action.jobs_result[0]);
         break;
     }
   });

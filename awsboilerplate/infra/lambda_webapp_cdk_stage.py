@@ -34,6 +34,11 @@ class LambdaWebArchitectureCDKStage(core.Stage):
                                                                api_gateway=self.cloud_front_stack.rest_api,
                                                                **kwargs)
 
+        if awsboilerplate_config.stack_lambda_hello_world:
+            self.lambda_sns_stack = LambdaWebArchitectureStack(self, 'LambdaHelloWorldStack',
+                                                               api_gateway=self.cloud_front_stack.rest_api,
+                                                               **kwargs)
+
         if awsboilerplate_config.stack_lambda_s3processor_enabled:
             self.lambda_data_stack = LambdaS3DataPipelineStack(self, 'LambdaS3DataPipelineStack',
                                                                api_gateway=self.cloud_front_stack.rest_api,
@@ -97,6 +102,29 @@ class LambdaS3DataPipelineStack(core.Stack):
         foo_r = api_gateway.root.add_resource("data")
         foo_r.add_method('GET', aws_apigateway.LambdaIntegration(lambda_handler))
 
+
+class LambdaHelloWorldStack(core.Stack):
+
+    def __init__(self, scope: core.Construct, id: str, api_gateway: aws_apigateway.RestApi, **kwargs):
+        super().__init__(scope, id, **kwargs)
+
+        # Lambda to accept background job requests
+        ecr_image = aws_lambda.EcrImageCode.from_asset_image(
+            directory=os.path.join(os.getcwd(), "awsboilerplate/app/lambda_hello_world"))
+        hello_world_lambda = aws_lambda.Function(self,
+                                                      id="lambdaHelloWorldFunction",
+                                                      description="Says Hello!!",
+                                                      code=ecr_image,
+                                                      handler=aws_lambda.Handler.FROM_IMAGE,
+                                                      runtime=aws_lambda.Runtime.FROM_IMAGE,
+                                                      allow_public_subnet=True,
+                                                      memory_size=128,
+                                                      reserved_concurrent_executions=10,
+                                                      timeout=core.Duration.seconds(10))
+
+        # Route the API gateway to the correct handlers
+        foo_r = api_gateway.root.add_resource("hello")
+        foo_r.add_method('GET', aws_apigateway.LambdaIntegration(hello_world_lambda))
 
 class LambdaWebArchitectureStack(core.Stack):
 
