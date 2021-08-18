@@ -24,18 +24,13 @@ class LambdaWebArchitectureCDKStage(core.Stage):
 
         self.cloud_front_stack = FlexibleCloudFrontStack(self, 'CloudFrontStack', domain_name, hosted_zone_id, **kwargs)
 
-        if awsboilerplate_config.stack_lambda_redis_enabled:
-            self.lambda_redis_stack = LambdaRedisStack(self, 'LambdaRedisStack',
-                                                       api_gateway=self.cloud_front_stack.rest_api,
-                                                    **kwargs)
-
-        if awsboilerplate_config.stack_lambda_webarchitecture_enabled:
-            self.lambda_sns_stack = LambdaWebArchitectureStack(self, 'LambdaWebArchitectureStack',
+        if awsboilerplate_config.stack_lambda_hello_world:
+            self.lambda_sns_stack = LambdaHelloWorldStack(self, 'LambdaHelloWorldStack',
                                                                api_gateway=self.cloud_front_stack.rest_api,
                                                                **kwargs)
 
-        if awsboilerplate_config.stack_lambda_hello_world:
-            self.lambda_sns_stack = LambdaWebArchitectureStack(self, 'LambdaHelloWorldStack',
+        if awsboilerplate_config.stack_lambda_webarchitecture_enabled:
+            self.lambda_sns_stack = LambdaWebArchitectureStack(self, 'LambdaWebArchitectureStack',
                                                                api_gateway=self.cloud_front_stack.rest_api,
                                                                **kwargs)
 
@@ -43,6 +38,12 @@ class LambdaWebArchitectureCDKStage(core.Stage):
             self.lambda_data_stack = LambdaS3DataPipelineStack(self, 'LambdaS3DataPipelineStack',
                                                                api_gateway=self.cloud_front_stack.rest_api,
                                                                **kwargs)
+
+        if awsboilerplate_config.stack_lambda_redis_enabled:
+            self.lambda_redis_stack = LambdaRedisStack(self, 'LambdaRedisStack',
+                                                       api_gateway=self.cloud_front_stack.rest_api,
+                                                    **kwargs)
+
 
         self.deploy_stack = APIGatewayDeployStack(self, 'APIDeployStack',
                                                   api_gateway=self.cloud_front_stack.rest_api)

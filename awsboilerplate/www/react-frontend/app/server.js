@@ -10,6 +10,11 @@ export function makeServer({ environment = "development" } = {}) {
     environment,
     routes() {
       this.urlPrefix = "https://api.localhost"
+
+      this.get("/prod/hello", (schema, request) => {
+        return new Response(202, {}, {message: "Hello " + request.queryParams.to})
+      })
+
       this.post("/prod/job", () => {
         const jn = ri(1000);
         return new Response(202, {}, {href: `/api/jobs/${jn}`, id: `${jn}`})

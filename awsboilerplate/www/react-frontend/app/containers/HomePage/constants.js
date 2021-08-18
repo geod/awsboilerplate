@@ -8,8 +8,7 @@
  * Follow this format:
  * export const YOUR_ACTION_CONSTANT = 'yourproject/YourContainer/YOUR_ACTION_CONSTANT';
  */
-
-export const SUBMIT_BACKGROUND_JOB = 'awsboilerplate/Home/SUBMIT_BACKGROUND_TASK';
+export const BACKGROUND_JOB_SUBMIT = 'awsboilerplate/Home/BACKGROUND_JOB_SUBMIT';
 
 export const BACKGROUND_JOB_ACCEPTED = 'awsboilerplate/Home/BACKGROUND_JOB_ACCEPTED';
 
@@ -18,3 +17,9 @@ export const BACKGROUND_JOB_LAUNCH_FAIL = 'awsboilerplate/Home/BACKGROUND_JOB_LA
 export const BACKGROUND_JOB_RESULT = 'awsboilerplate/Home/BACKGROUND_JOB_RESULT';
 
 export const BACKGROUND_JOB_STATUS_POLL = 'awsboilerplate/Home/BACKGROUND_JOB_STATUS_POLL';
+
+export const SAY_HELLO_REQUEST = 'awsboilerplate/Home/SAY_HELLO_REQUEST';
+
+export const SAY_HELLO_RESULT = 'awsboilerplate/Home/SAY_HELLO_RESULT';
+
+

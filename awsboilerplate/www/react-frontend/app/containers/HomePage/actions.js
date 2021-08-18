@@ -16,11 +16,29 @@
  */
 
 import {
-  SUBMIT_BACKGROUND_JOB,
+  BACKGROUND_JOB_SUBMIT,
   BACKGROUND_JOB_ACCEPTED,
   BACKGROUND_JOB_LAUNCH_FAIL,
-  BACKGROUND_JOB_STATUS_POLL, BACKGROUND_JOB_RESULT
+  BACKGROUND_JOB_STATUS_POLL,
+  BACKGROUND_JOB_RESULT,
+  SAY_HELLO_REQUEST,
+  SAY_HELLO_RESULT
 } from './constants';
+
+export function sayHelloRequest(text) {
+  return {
+    type: SAY_HELLO_REQUEST,
+    text,
+  };
+}
+
+export function sayHelloResult(text, success) {
+  return {
+    type: SAY_HELLO_RESULT,
+    text,
+    success,
+  };
+}
 
 /**
  * Changes the input field of the form
@@ -31,7 +49,7 @@ import {
  */
 export function submitBackgroundJob(number) {
   return {
-    type: SUBMIT_BACKGROUND_JOB,
+    type: BACKGROUND_JOB_SUBMIT,
     number,
   };
 }

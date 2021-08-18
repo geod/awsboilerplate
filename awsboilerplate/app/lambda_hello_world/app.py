@@ -1,7 +1,7 @@
 import json
 
 def handler(event, context):
-    to = event["queryStringParameters"]['say']
+    to = event["queryStringParameters"]['to']
     response = {
         "statusCode": 200,
         "headers": {},
