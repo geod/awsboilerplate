@@ -16,11 +16,11 @@ const rootDomain = s => {
  */
 export function* sayHello(action) {
   try {
+    debugger;
     const root_domain = rootDomain(window.location.hostname);
     const full_path = "https://api." + root_domain + "/prod/hello?to=" + action.text;
     const say_hello_response = yield fetch(full_path)
     const response_body = JSON.parse(say_hello_response._bodyText);
-    debugger;
     yield put(sayHelloResult(response_body["message"], true));
   } catch (err) {
     yield put(sayHelloResult(err, false));
