@@ -11,7 +11,7 @@ region = "us-east-1"
 stack_lambda_hello_world = True
 stack_lambda_redis_enabled = False
 stack_lambda_webarchitecture_enabled = False
-stack_lambda_s3processor_enabled = True
+stack_lambda_s3processor_enabled = False
 
 # IF NOT set then the project will create a deployment without a domain name
 # IF SET then the project will automatically create cloud front distributions, DNS for etc for the domain

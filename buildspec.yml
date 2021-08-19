@@ -11,7 +11,7 @@ phases:
     commands:
       - echo Running npm build!!
       - pwd
-      - npm run build:quiet
+      - npm run build:dev
       - cd ../../../
       - pwd
   post_build:
