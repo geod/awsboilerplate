@@ -4,7 +4,10 @@ def handler(event, context):
     to = event["queryStringParameters"]['to']
     response = {
         "statusCode": 200,
-        "headers": {},
+        "headers": {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": True
+        },
         "body": json.dumps({
             "message": "Hello " + to
         })
