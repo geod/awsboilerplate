@@ -1,12 +1,14 @@
-import {put, takeEvery, takeLatest} from 'redux-saga/effects';
+import {call, put, takeEvery, takeLatest} from 'redux-saga/effects';
 import {BACKGROUND_JOB_SUBMIT, BACKGROUND_JOB_STATUS_POLL, SAY_HELLO_REQUEST} from "./constants";
 import {sayHelloResult, backgroundJobAccepted, backgroundJobRejected, backgroundJobStatusResult} from "./actions";
+import axios from 'axios';
 
 /**
  * Submit a background job
  */
 
 const rootDomain = s => {
+    return
     const r =  /.*\.([^.]*[^0-9][^.]*\.[^.]*[^.0-9][^.]*$)/;
     return s.replace(r, '$1');
 };
@@ -19,9 +21,8 @@ export function* sayHello(action) {
     debugger;
     const root_domain = rootDomain(window.location.hostname);
     const full_path = "https://api." + root_domain + "/prod/hello?to=" + action.text;
-    const say_hello_response = yield fetch(full_path)
-    const response_body = JSON.parse(say_hello_response._bodyText);
-    yield put(sayHelloResult(response_body["message"], true));
+    const { data } = yield axios.get(full_path)
+    yield put(sayHelloResult(data.message, true));
   } catch (err) {
     yield put(sayHelloResult(err, false));
   }

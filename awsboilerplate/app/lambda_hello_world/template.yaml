@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: A starter AWS Lambda function.
+Parameters:
+    IdentityNameParameter:
+      Type: String
+Resources:
+  helloworldpython3:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: app.handler
+      Runtime: python3.6
+      CodeUri: .
+      Description: A starter AWS Lambda function.
+      MemorySize: 128
+      Timeout: 3
+      Events:
+        HttpPost:
+          Type: Api
+          Properties:
+            Path: '/prod/hello'
+            Method: get

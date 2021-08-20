@@ -14,6 +14,7 @@ import {
   BACKGROUND_JOB_RESULT,
   BACKGROUND_JOB_STATUS_POLL,
   SAY_HELLO_RESULT,
+  SAY_HELLO_REQUEST
 } from './constants';
 
 // The initial state of the App
@@ -29,7 +30,14 @@ const homeReducer = (state = initialState, action) =>
     switch (action.type) {
       case SAY_HELLO_RESULT:
         debugger;
-        draft.hello_to = action.text;
+        if (action.success){
+          draft.hello_to = action.text;
+        }else{
+          draft.hello_to = "failure encountered";
+        }
+        break;
+      case SAY_HELLO_REQUEST:
+        debugger;
         break;
       case BACKGROUND_JOB_SUBMIT:
         break;
