@@ -8,7 +8,6 @@ import axios from 'axios';
  */
 
 const rootDomain = s => {
-    return
     const r =  /.*\.([^.]*[^0-9][^.]*\.[^.]*[^.0-9][^.]*$)/;
     return s.replace(r, '$1');
 };
