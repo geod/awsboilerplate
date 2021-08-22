@@ -9,13 +9,14 @@ account = "390589559702"
 region = "us-east-1"
 
 stack_lambda_hello_world = True
+
+#EXPERIMENTAL - flags enable creation of additional back end patterns
+stack_lambda_background_worker_enabled = False
 stack_lambda_redis_enabled = False
-stack_lambda_webarchitecture_enabled = False
 stack_lambda_s3processor_enabled = False
 
-# IF NOT set then the project will create a deployment without a domain name
-# IF SET then the project will automatically create cloud front distributions, DNS for etc for the domain
-website_domain_name = "awsboilerplate.io"  # "awsboilerplate.io"
+# Set once you register a domain in r53 and get the hosted zone
+website_domain_name = "awsboilerplate.io"
 hosted_zone_id = "Z0294872265LREBAVWK90"
 
 

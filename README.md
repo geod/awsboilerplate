@@ -34,51 +34,6 @@ We are calling the pattern built ontop of CDK and CDKPipelines 'Everything is Co
 
 The initial architecture is likely a good jumping off point for many developers. If you want to customize and build on it you have full access to change anything. It is an opinionated starter but open to adaptation.
 
-### Architecture Overview
-The project implements a lambda reference architecture for web applications with CICD pipeline, building react front 
-end for distribution via CloudFront over S3. An API Gateway fronts lambdas serving from S3 and a background worker.
-
-![Overview](documentation/AWS-Boilerplate-Architecture.jpg?raw=true "awsboilerplate")
-
-### CICD Pipeline Process
-A custom CICD pipeline combines CodePipline, Codebuild and [CDK Pipeline](https://aws.amazon.com/blogs/developer/cdk-pipelines-continuous-delivery-for-aws-cdk-applications/). 
-
-![TUB CICD](documentation/AWS-Boilerplate-Pipeline.jpg?raw=true "awsboilerplate CICD")
-
-The pipeline supports the following use-cases:
-* Changing application code (changing the code behind a lambda) => Pipeline will deploy the new code
-* Changing infrastructure (adding/delete constructs - S3/API Gw/Lamba/Certificates) => The CDK stage of the pipeline diffs the current vs requested state and automatically generates and executes the cloud formation changeset
-![TUB CICD](documentation/AWS-Boilerplate-Infrastructure-Mutate.jpg?raw=true "Infrastructure Mutate")
-* Changing the pipeline stages (adding/deleting new stages) => An early stage of the pipeline reads new version of the pipeline, rebootstraps to the new pipeline before continuing
-![TUB CICD](documentation/AWS-Boilerplate-Pipeline-Mutate.jpg?raw=true "Pipeline Mutate")
-
-### Everything Is Code
-
-Every developer is likely familiar with the term 'Infrastructure as Code'. Over the last decade infrastructure has moved
-from manual configuration to being implemented as code. However, it is still partial and does not cover all aspects of
-a project or the developer experience ...
-
-|**Infrastructure as Code** | 
-|---|
-|Scope limited to compute and networking resources|
-|Tools target the cloud/infrastructure team (Terraform). Steep learning curve or not accessible to developers |
-|Infrastructure definitions held in distinct repo from application code|
-|Infrastructure changes made by the cloud/infrastructure team |
-|Infrastructure deployed via CICD pipeline. Need for coordination with the application team|
-|Infrastructure and Application skillset split across two teams |
-
-The end state of this direction of travel is **everything is code**: all the elements get moved into code 
-(application, infrastructure, monitoring, pipeline), change is consolidated and developers have more control.
-
-|**Infrastructure as Code** | **Everything is Code**|
-|---|---|
-|Scope is typically compute and networking|Everything is defined in code (Application Code, Infrastructure, Pipeline, Monitoring) |
-|Tools targeted at the cloud or infrastructure team (Terraform). Steep learning curve or not accessible to developers | Tools targeted at developers (CDK)|
-|Infrastructure definitions held in distinct repo from application code| Definitions for everything held in single mono-repo|
-|Infrastructure changes made by the cloud/infrastructure team | Everything accessible to developers |
-|Infrastructure deployed by a distinct CICD pipeline. Application changes deployed by a different pipeline and coordination required | Singular pipeline handles all changes| 
-|Infrastructure and Application skillset split across two teams | Developers more empowered with support from central cloud team |
-
 ## Prerequisites
 
 1. Existing AWS Account
@@ -141,6 +96,51 @@ git push origin master
 
 The cdkpipeline will pick up the changes to both the application code and infrastructure and mutate both. Once the
 pipeline runs you can hit the domain name to see the new changes (remember cloudfront cache may be enabled).
+
+### Architecture Overview
+The project implements a lambda reference architecture for web applications with CICD pipeline, building react front 
+end for distribution via CloudFront over S3. An API Gateway fronts lambdas serving from S3 and a background worker.
+
+![Overview](documentation/AWS-Boilerplate-Architecture.jpg?raw=true "awsboilerplate")
+
+### CICD Pipeline Process
+A custom CICD pipeline combines CodePipline, Codebuild and [CDK Pipeline](https://aws.amazon.com/blogs/developer/cdk-pipelines-continuous-delivery-for-aws-cdk-applications/). 
+
+![TUB CICD](documentation/AWS-Boilerplate-Pipeline.jpg?raw=true "awsboilerplate CICD")
+
+The pipeline supports the following use-cases:
+* Changing application code (changing the code behind a lambda) => Pipeline will deploy the new code
+* Changing infrastructure (adding/delete constructs - S3/API Gw/Lamba/Certificates) => The CDK stage of the pipeline diffs the current vs requested state and automatically generates and executes the cloud formation changeset
+![TUB CICD](documentation/AWS-Boilerplate-Infrastructure-Mutate.jpg?raw=true "Infrastructure Mutate")
+* Changing the pipeline stages (adding/deleting new stages) => An early stage of the pipeline reads new version of the pipeline, rebootstraps to the new pipeline before continuing
+![TUB CICD](documentation/AWS-Boilerplate-Pipeline-Mutate.jpg?raw=true "Pipeline Mutate")
+
+### Everything Is Code
+
+Every developer is likely familiar with the term 'Infrastructure as Code'. Over the last decade infrastructure has moved
+from manual configuration to being implemented as code. However, it is still partial and does not cover all aspects of
+a project or the developer experience ...
+
+|**Infrastructure as Code** | 
+|---|
+|Scope limited to compute and networking resources|
+|Tools target the cloud/infrastructure team (Terraform). Steep learning curve or not accessible to developers |
+|Infrastructure definitions held in distinct repo from application code|
+|Infrastructure changes made by the cloud/infrastructure team |
+|Infrastructure deployed via CICD pipeline. Need for coordination with the application team|
+|Infrastructure and Application skillset split across two teams |
+
+The end state of this direction of travel is **everything is code**: all the elements get moved into code 
+(application, infrastructure, monitoring, pipeline), change is consolidated and developers have more control.
+
+|**Infrastructure as Code** | **Everything is Code**|
+|---|---|
+|Scope is typically compute and networking|Everything is defined in code (Application Code, Infrastructure, Pipeline, Monitoring) |
+|Tools targeted at the cloud or infrastructure team (Terraform). Steep learning curve or not accessible to developers | Tools targeted at developers (CDK)|
+|Infrastructure definitions held in distinct repo from application code| Definitions for everything held in single mono-repo|
+|Infrastructure changes made by the cloud/infrastructure team | Everything accessible to developers |
+|Infrastructure deployed by a distinct CICD pipeline. Application changes deployed by a different pipeline and coordination required | Singular pipeline handles all changes| 
+|Infrastructure and Application skillset split across two teams | Developers more empowered with support from central cloud team |
 
 ## Comparison to Alternatives
 
