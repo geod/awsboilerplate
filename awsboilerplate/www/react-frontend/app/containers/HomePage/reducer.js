@@ -29,7 +29,6 @@ const homeReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
       case SAY_HELLO_RESULT:
-        debugger;
         if (action.success){
           draft.hello_to = action.text;
         }else{
@@ -37,7 +36,6 @@ const homeReducer = (state = initialState, action) =>
         }
         break;
       case SAY_HELLO_REQUEST:
-        debugger;
         break;
       case BACKGROUND_JOB_SUBMIT:
         break;

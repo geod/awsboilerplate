@@ -28,7 +28,6 @@ module.exports = require('./webpack.base.babel')({
       chunks: 'all',
     },
   },
-
   // Add development plugins
   plugins: [
     new webpack.HotModuleReplacementPlugin(), // Tell webpack we want hot reloading
@@ -40,6 +39,9 @@ module.exports = require('./webpack.base.babel')({
       exclude: /a\.js|node_modules/, // exclude node_modules
       failOnError: false, // show a warning when there is a circular dependency
     }),
+    new webpack.EnvironmentPlugin({
+      SERVER_URL: 'http://127.0.0.1:3000'
+    }),
   ],
 
   // Emit a source map for easier debugging
@@ -49,4 +51,5 @@ module.exports = require('./webpack.base.babel')({
   performance: {
     hints: false,
   },
+
 });

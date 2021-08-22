@@ -53,6 +53,7 @@ export function HomePage({
                 id="say"
                 type="text"
               />
+              <button type="button">Submit</button>
           </Form>
           Response From Lambda:{hello_to}
         </Section>
