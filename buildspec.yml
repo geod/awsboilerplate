@@ -3,7 +3,7 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - cd awsboilerplate/www/react-frontend
+      - cd awsboilerplate/www
       - echo Running NPM Install!!
       - pwd
       - npm install --quiet --no-progress
@@ -17,8 +17,8 @@ phases:
   post_build:
     commands:
       - pwd
-      - ls -lh awsboilerplate/www/react-frontend/build
-      - rm -rf awsboilerplate/www/react-frontend/node_modules
+      - ls -lh awsboilerplate/www/build
+      - rm -rf awsboilerplate/www/node_modules
 artifacts:
   files:
      - '**/*'
