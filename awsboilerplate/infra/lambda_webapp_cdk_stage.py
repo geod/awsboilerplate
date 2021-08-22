@@ -29,7 +29,7 @@ class LambdaWebArchitectureCDKStage(core.Stage):
                                                                api_gateway=self.cloud_front_stack.rest_api,
                                                                **kwargs)
 
-        if awsboilerplate_config.stack_lambda_webarchitecture_enabled:
+        if awsboilerplate_config.stack_lambda_background_worker_enabled:
             self.lambda_sns_stack = LambdaWebArchitectureStack(self, 'LambdaWebArchitectureStack',
                                                                api_gateway=self.cloud_front_stack.rest_api,
                                                                **kwargs)
