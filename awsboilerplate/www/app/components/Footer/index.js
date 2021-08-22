@@ -14,7 +14,7 @@ function Footer() {
         <FormattedMessage {...messages.licenseMessage} />
       </section>
       <section>
-        <LocaleToggle />
+        {/* <LocaleToggle /> */}
       </section>
       <section>
         <p>

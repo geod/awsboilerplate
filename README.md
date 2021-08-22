@@ -8,19 +8,17 @@ Get live in minutes with a complete stack: react front end, lambdas, infrastruct
 
 ## Motivation
 
-Everyone wants to focus on the idea and not setup / config fiddling. The
- [serverless web application](https://aws.amazon.com/lambda/resources/refarch/refarch-webapp/) is a common pattern for building web applications / startups.
- However, there is often hours or days of setup to create a **complete** and robust setup.
+Everyone wants to focus on the idea and not setup / config fiddling. A react front end with lambda backend is a common pattern 
+for building web applications / startups. However, there is hours/days of setup to create a **complete** and robust setup.
  
 Awsboilerplate is a complete and integrated boilerplate including:
 1. Front end react/redux stack (leveraging the react boilerplate project built via codebuild)
-2. Lambda back end (including exemplars for common lambda patterns)
-3. Infrastructure (certificates, route53 domains and DNS setup, cloudfront, API Gateways)
+2. Lambda back end (including exemplars for common lambda patterns - hello world, background jobs, data pipelines)
+3. Infrastructure (certificates, route53 domains, DNS setup, cloudfront, API Gateways, etc)
 4. Monitoring
-5. CICD pipeline (including self-mutation detailed below)
-6. React and the lambdas can be developed locally before deployment (setup also included)
-
-All the build, config and wiring is complete. Everything is defined in CDK and is [self-mutating](documentation/everything_is_code.md)
+5. CICD pipeline. Novel aspect is [everything_is_code](documentation/everything_is_code.md) and self-mutating.
+6. Supports local development workflow (SAM is configured)
+67 All the build, config and wiring of the above elements is done
 
 [Live Demo](https://www.awsboilerplate.io/) contains a front end calling a 'hello world' lambda.
 
@@ -76,7 +74,7 @@ When this pipeline runs it will create all of the infrastructure defined in `aws
 
 ### Development Cycle / Making Changes
 
-You can develop features locally changing **both** the front end and the lambdas. This includes changing, adding or deleting new lambdas
+You can develop the react front end or lambdas locally then deploy.
 
 When ready to push simply run
 ```buildoutcfg
@@ -84,24 +82,26 @@ When ready to push simply run
 git push origin master
 ```
 
-The cdkpipeline will pick up the changes to both the application code and infrastructure and mutate both. Once the
+The CICD will pick up the changes to both the application code and infrastructure and mutate both. Once the
 pipeline runs you can hit the domain name to see the new changes (remember cloudfront cache may be enabled).
 
 ### Architecture Overview
-The project implements a lambda reference architecture for web applications with CICD pipeline, building react front 
-end for distribution via CloudFront over S3. 
+The project implements the [serverless web application pattern](https://aws.amazon.com/lambda/resources/refarch/refarch-webapp/).
+1. React front end (leveraging and integrating the [react boilerplate](https://github.com/react-boilerplate/react-boilerplate))
+2. Back end lambdas
+3. CICD pipeline to deploy everything (mixing codepipeline, codebuild and cdkpipelines)
 
 ![Overview](documentation/AWS-Boilerplate-Architecture.jpg?raw=true "awsboilerplate")
 
 ### 'Everything is Code'
 
-awsboilerplate has a few novel features.
+awsboilerplate has a small novelty.
 
 The project leverages [CDK](https://aws.amazon.com/cdk/). CDK allows the entire infrastructure to be expressed in code and is relatively developer friendly. 
 
 Furthermore, awsboilerplate leverages one of the latest features within CDK - [CDKPipelines](https://aws.amazon.com/blogs/developer/cdk-pipelines-continuous-delivery-for-aws-cdk-applications/).
 
-The project leverages these two technologies and wires them into a pattern where:
+The project wires these technologies and builds a custom deployment pipeline where:
 
 > 1. Every element (front end, back end, cicd, infrastructure, monitoring) is implemented **in code**, in a **single mono repository**.
 > 2. It is possible to commit a change to any element and the pipeline should auto-magically make it happen (including changes to the pipeline itself) 
@@ -121,7 +121,7 @@ awsboilerplate assemble and integrates multiple technologies into a full archite
 stretching CDK to support a single mono-repository and combined pipeline.
 
 Acknowledgements
-1. [react-boilerplate](https://github.com/react-boilerplate/react-boilerplate) is just fabulous
+1. [react-boilerplate](https://github.com/react-boilerplate/react-boilerplate) is fabulous
 2. @rix0rrr provided invaluable help to answer a number of CDK questions
 
 Other Reading

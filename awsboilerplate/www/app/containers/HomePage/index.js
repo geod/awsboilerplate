@@ -43,20 +43,19 @@ export function HomePage({
           <H2>
             <FormattedMessage {...messages.startProjectHeader} />
           </H2>
-          <p>
-            <FormattedMessage {...messages.startProjectMessage} />
-          </p>
         </CenteredSection>
-          <Section>
+        <CenteredSection>
+          Call the <a href="https://github.com/geod/awsboilerplate/tree/master/awsboilerplate/app/lambda_hello_world">hello world lambda</a>
+          <br/>
           <Form onSubmit={onSayHello}>
-            <Input
+            My name is: <Input
                 id="say"
                 type="text"
               />
-              <button type="button">Submit</button>
+              <button type="button" onClick={onSayHello}>Submit</button>
           </Form>
-          Response From Lambda:{hello_to}
-        </Section>
+          Response:{hello_to}
+        </CenteredSection>
       </div>
     </article>
   );
