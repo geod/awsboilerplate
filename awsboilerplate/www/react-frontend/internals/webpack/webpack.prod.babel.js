@@ -143,8 +143,8 @@ module.exports = require('./webpack.base.babel')({
     }),
 
     new webpack.EnvironmentPlugin({
-      SERVER_URL: 'https://api.awsboilerplate.io'
-    }),
+      SERVER_URL: 'https://api.awsboilerplate.io' // CHANGE THIS
+    })
   ],
 
   performance: {
