@@ -12,7 +12,7 @@ phases:
       - echo Running npm build!!
       - pwd
       - npm run build:prod
-      - cd ../../../
+      - cd ../..
       - pwd
   post_build:
     commands:
