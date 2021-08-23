@@ -9,6 +9,7 @@ For a team creating a startup there are a number of options. Each cell can be de
 | Heroku | Super Easy | Superb | Moderate | High |
 | Amplify | Easy | Okay | Low/Moderate | Low |
 | Porter | Easy | Good | Low/Moderate | Low |
+| AWS Console/Manual | Easy | Poor <br>(not repeatable) | Low/Moderate | Low |
 
 CDK/AWS Native is not quite there in terms of developer experience (yet) and AWS is maturing the tooling. 
 However, it is a viable option and if it is improved over the next few quarters it could be compelling offering
