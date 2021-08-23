@@ -126,6 +126,7 @@ Acknowledgements
 incorporates the react-boilerplate as a component. The react boilerplate provided additional inspiration in the ability
 to solve a ton of developer friction and time (if you have ever tried to assemble a react-redux-webpack project from scratch)
 2. @rix0rrr provided invaluable help to answer a number of CDK questions
+3. @muymoo for answering every single other question!
 
 Other Reading
 1. I found this too late into building awsboilerplate [CDK Patterns](https://cdkpatterns.com/)
