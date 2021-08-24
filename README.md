@@ -9,7 +9,7 @@ Get live in minutes with a complete stack: react front end, lambdas, infrastruct
 ## Motivation
 
 Everyone wants to focus on the idea and not setup / config fiddling. A react front end with lambda backend is a common pattern 
-for building web applications / startups. However, there is hours/days of setup to create a **complete** and robust setup.
+for building web applications / startups. However, there is hours/days of setup to create a **complete and robust** setup.
  
 Awsboilerplate attempts to provide a complete and integrated boilerplate solution:
 1. Front end react/redux stack: leveraging the react-boilerplate project built via codebuild
@@ -19,9 +19,9 @@ Awsboilerplate attempts to provide a complete and integrated boilerplate solutio
 5. Everything is Code: All elements are defined in code/CDK (application, infrastructure and pipeline)
 6. CICD pipeline: self-mutating pipeline which deploys [everything](documentation/everything_is_code.md)
 7. Supports local development workflow (SAM is configured) 
-8. Integration: All the components are wired together (build, config (dev, prod), infrastructure)
+8. Integration: All the components are wired together (build, config, infrastructure)
 
-[Live Demo](https://www.awsboilerplate.io/) shows the react front end calling a 'hello world' lambda. This application
+[Live Demo](https://www.awsboilerplate.io/) includes the react front end calling a 'hello world' lambda. This application
 is deployed via the CICD pipeline.
 
 ## Prerequisites
@@ -97,12 +97,9 @@ The project implements the [serverless web application pattern](https://aws.amaz
 
 ### 'Everything is Code'
 
-awsboilerplate has a small novelty.
+awsboilerplate has some novelty. The project leverages [CDK](https://aws.amazon.com/cdk/) and a recently released feature: [CDKPipelines](https://aws.amazon.com/blogs/developer/cdk-pipelines-continuous-delivery-for-aws-cdk-applications/).
 
-The project leverages [CDK](https://aws.amazon.com/cdk/) and all infrastructure, pipeline and app is expressed in code.
-Furthermore, awsboilerplate leverages one of the latest features within CDK - [CDKPipelines](https://aws.amazon.com/blogs/developer/cdk-pipelines-continuous-delivery-for-aws-cdk-applications/).
-
-The project wires these technologies and builds a custom deployment pipeline. This then enables:
+awsboilerplate includes a custom pipeline build ontop of these technologies. 
 
 > 1. Every element (front end, back end, cicd, infrastructure, monitoring) is implemented **in code**, in a **single mono repository**.
 > 2. It is possible to commit a change to any element and the pipeline should auto-magically make it happen (including changes to the pipeline itself) 
