@@ -68,6 +68,7 @@
   "dependencies": {
     "@babel/polyfill": "7.4.3",
     "axios": "^0.21.1",
+    "bootstrap": "^5.1.0",
     "chalk": "2.4.2",
     "compression": "1.7.4",
     "connected-react-router": "6.4.0",
@@ -84,8 +85,10 @@
     "minimist": "1.2.0",
     "process": "^0.11.10",
     "prop-types": "15.7.2",
-    "react": "16.8.6",
-    "react-dom": "16.8.6",
+    "react": "^17.0.2",
+    "react-bootstrap": "^2.0.0-beta.6",
+    "react-bootstrap-icons": "^1.5.0",
+    "react-dom": "^17.0.2",
     "react-helmet": "6.0.0-beta",
     "react-intl": "2.8.0",
     "react-redux": "7.0.2",
@@ -95,6 +98,7 @@
     "redux-saga": "1.0.2",
     "reselect": "4.0.0",
     "sanitize.css": "8.0.0",
+    "startbootstrap-business-frontpage": "^5.0.4",
     "styled-components": "4.2.0"
   },
   "devDependencies": {
