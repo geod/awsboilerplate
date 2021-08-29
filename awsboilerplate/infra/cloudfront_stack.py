@@ -55,7 +55,7 @@ class FlexibleCloudFrontStack(core.Stack):
             f'WWW2_Bucket_{domain_name}',
             bucket_name=domain_name,
             website_index_document='index.html',
-            website_error_document='error.html',
+            website_error_document='index.html',
             public_read_access=True,
             removal_policy=core.RemovalPolicy.DESTROY
         )
