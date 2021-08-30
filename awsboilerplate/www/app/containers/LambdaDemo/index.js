@@ -32,15 +32,11 @@ export function LambdaDemo({
   useInjectSaga({ key, saga });
 
   return (
-      <div>
-      <Helmet>
-        <title>Live Demo</title>
-        <meta
-          name="description"
-          content="awsboilerplate.io"
-        />
-      </Helmet>
-      <div className="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-white">
+      <section className="bg-white py-5" >
+      <div className="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
+        <div className="text-center mb-5">
+          <h1 className="fw-bolder">Live Demo</h1>
+        </div>
         <div className="col-md-5 mx-auto">
           <p className="lead font-weight-normal">Back end <a href="https://github.com/geod/awsboilerplate/tree/master/awsboilerplate/app/lambda_hello_world">hello world lambda</a> already wired into the front end with redux, saga</p>
           <p className="lead font-weight-normal">Call it now ...</p>
@@ -54,7 +50,7 @@ export function LambdaDemo({
           </Form>
           Response:{hello_to}
       </div>
-      </div>
+      </section>
   );
 }
 

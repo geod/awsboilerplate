@@ -8,6 +8,7 @@ import { compose } from 'redux';
 import Hero from './Hero';
 import Features from './Features';
 import Motivation from './Motivation';
+import LambdaDemo from '../LambdaDemo';
 import messages from './messages';
 
 import H2 from 'components/H2';
@@ -33,6 +34,7 @@ export function HomePage({}) {
         <Hero />
         <Motivation />
         <Features />
+        <LambdaDemo/>
       </div>
     </article>
   );

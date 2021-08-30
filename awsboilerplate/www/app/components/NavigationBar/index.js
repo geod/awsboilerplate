@@ -17,7 +17,6 @@ function NavigationBar() {
           <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="/">Home</Nav.Link>
-            <Nav.Link href="/LambdaDemo">LambdaDemo</Nav.Link>
           </Nav>
           </Navbar.Collapse>
         </Container>
